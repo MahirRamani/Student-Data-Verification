@@ -1,7 +1,7 @@
 // src/components/HistoryTab.tsx
 import { useEffect, useState } from 'react';
 import { useStudentStore } from '../store/studentStore';
-import { fetchUpdateHistory } from '../services/api';
+import { getUpdateHistory } from '../services/api';
 import { UpdateHistory } from '../types/students';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Skeleton } from './ui/skeleton';
@@ -16,7 +16,7 @@ const HistoryTab = () => {
     const loadHistory = async () => {
       setLoading(true);
       try {
-        const data = await fetchUpdateHistory(student.roll_no);
+        const data = await getUpdateHistory(student.roll_no);
         setHistory(data);
       } catch (err: any) {
         console.error('Failed to fetch history:', err);

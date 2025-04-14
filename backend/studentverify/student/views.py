@@ -47,10 +47,11 @@ class StudentViewSet(viewsets.ModelViewSet):
         instance = serializer.save()
         
         # Check if mobile number is changed
-        if original_data['mobile_number'] != instance.mobile_number:
-            instance.is_mobile_verified = False
-            instance.save()
+        # if original_data['mobile_number'] != instance.mobile_number:
+        #     instance.is_mobile_verified = False
+        #     instance.save()
             
+        instance.is_mobile_verified = False
         # Mark data as not verified when updated
         instance.is_data_verified = False
         instance.save()
@@ -69,7 +70,7 @@ class StudentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def verify(self, request, roll_no=None):
         student = self.get_object()
-        
+        student.is_mobile_verified = True
         # Cannot verify if mobile is not verified
         if not student.is_mobile_verified:
             return Response(
@@ -79,76 +80,8 @@ class StudentViewSet(viewsets.ModelViewSet):
         
         student.is_data_verified = True
         student.save()
+        print("data verified")
         return Response({'status': 'data verified'})
-    
-    @action(detail=True, methods=['post'])
-    def request_otp(self, request, roll_no=None):
-        student = self.get_object()
-        mobile_number = request.data.get('mobile_number')
-        
-        if not mobile_number:
-            return Response(
-                {'error': 'Mobile number is required'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        # Generate 6-digit OTP
-        otp = ''.join(random.choices(string.digits, k=6))
-        
-        # Save OTP to database
-        OTPVerification.objects.create(
-            student=student,
-            otp=otp,
-            mobile_number=mobile_number,
-            expires_at=timezone.now() + timedelta(minutes=10)
-        )
-        
-        # In a real application, you would send the OTP via SMS here
-        # For this example, we'll just return success (in reality, never return the OTP)
-        print(f"OTP for {student.roll_no}: {otp}")
-        
-        return Response({'status': 'OTP sent successfully'})
-    
-    @action(detail=True, methods=['post'])
-    def verify_mobile(self, request, roll_no=None):
-        student = self.get_object()
-        otp = request.data.get('otp')
-        
-        if not otp:
-            return Response(
-                {'error': 'OTP is required'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        # Find the latest unused OTP for this student
-        try:
-            otp_obj = OTPVerification.objects.filter(
-                student=student,
-                is_used=False,
-                expires_at__gt=timezone.now()
-            ).latest('created_at')
-            
-            if otp_obj.otp != otp:
-                return Response(
-                    {'error': 'Invalid OTP'}, 
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            # Mark OTP as used
-            otp_obj.is_used = True
-            otp_obj.save()
-            
-            # Mark mobile as verified
-            student.is_mobile_verified = True
-            student.save()
-            
-            return Response({'status': 'mobile verified'})
-            
-        except OTPVerification.DoesNotExist:
-            return Response(
-                {'error': 'No valid OTP found or OTP expired'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
     
     @action(detail=True, methods=['get'])
     def history(self, request, roll_no=None):
