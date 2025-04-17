@@ -39,6 +39,10 @@ DEBUG = True
 
 CORS_ALLOW_ALL_ORIGINS = True  # For development only
 
+
+APPEND_SLASH=False
+
+
 # If you need specific HTTP methods
 CORS_ALLOW_METHODS = [
     "DELETE",
