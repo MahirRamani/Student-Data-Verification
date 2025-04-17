@@ -8,7 +8,7 @@ class StudentSerializer(serializers.ModelSerializer):
                  'father_mobile_number', 'date_of_birth', 'address', 
                  'field_of_study', 'branch', 'is_data_verified', 
                  'is_mobile_verified']
-        read_only_fields = ['id', 'is_data_verified', 'is_mobile_verified']
+        read_only_fields = ['id']
 
 
 class UpdateHistorySerializer(serializers.ModelSerializer):

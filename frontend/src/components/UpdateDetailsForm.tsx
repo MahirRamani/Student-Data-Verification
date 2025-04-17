@@ -151,219 +151,446 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
     }
   };
   
+  // return (
+  //   <Card className="shadow-none border-none">
+  //     <CardContent className="p-0">
+  //       <div className="mb-4">
+  //         <Alert variant="default" className="bg-blue-50 border-blue-200">
+  //           <Info className="h-4 w-4 text-blue-500" />
+  //           <AlertDescription className="flex items-center justify-between">
+  //             <span>Please enter your information accurately as per official records.</span>
+  //             <Button 
+  //               variant="ghost" 
+  //               size="sm" 
+  //               onClick={() => setShowGuidelines(!showGuidelines)}
+  //               className="text-blue-600 hover:text-blue-800"
+  //             >
+  //               {showGuidelines ? 'Hide Guidelines' : 'View Input Guidelines'}
+  //             </Button>
+  //           </AlertDescription>
+  //         </Alert>
+          
+  //         {showGuidelines && (
+  //           <div className="mt-4 p-4 bg-gray-50 rounded-md border">
+  //             <h3 className="font-medium mb-2">Input Guidelines:</h3>
+  //             <ul className="text-sm space-y-1">
+  //               {Object.entries(INPUT_GUIDELINES).map(([field, guideline]) => (
+  //                 <li key={field} className="flex gap-2">
+  //                   <span className="font-medium min-w-32">{field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}:</span>
+  //                   <span>{guideline}</span>
+  //                 </li>
+  //               ))}
+  //             </ul>
+  //           </div>
+  //         )}
+  //       </div>
+        
+  //       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+  //         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  //           <div className="space-y-2">
+  //             <Label htmlFor="roll_no">Roll No</Label>
+  //             <Input
+  //               id="roll_no"
+  //               {...register('roll_no')}
+  //               readOnly
+  //               className="bg-gray-50"
+  //             />
+  //             {errors.roll_no && (
+  //               <p className="text-sm text-red-500">{errors.roll_no.message}</p>
+  //             )}
+  //           </div>
+            
+  //           <div className="space-y-2">
+  //             <Label htmlFor="name">Name</Label>
+  //             <Input
+  //               id="name"
+  //               {...register('name')}
+  //             />
+  //             {errors.name && (
+  //               <p className="text-sm text-red-500">{errors.name.message}</p>
+  //             )}
+  //           </div>
+            
+  //           <div className="space-y-2">
+  //             <Label htmlFor="email">Email</Label>
+  //             <Input
+  //               id="email"
+  //               type="email"
+  //               {...register('email')}
+  //             />
+  //             {errors.email && (
+  //               <p className="text-sm text-red-500">{errors.email.message}</p>
+  //             )}
+  //           </div>
+            
+  //           <div className="space-y-2">
+  //             <Label htmlFor="mobile_number">Mobile Number</Label>
+  //             <Input
+  //               id="mobile_number"
+  //               type="tel"
+  //               {...register('mobile_number')}
+  //             />
+  //             {errors.mobile_number && (
+  //               <p className="text-sm text-red-500">{errors.mobile_number.message}</p>
+  //             )}
+  //           </div>
+            
+  //           <div className="space-y-2">
+  //             <Label htmlFor="date_of_birth">Date of Birth</Label>
+  //             <Input
+  //               id="date_of_birth"
+  //               type="date"
+  //               {...register('date_of_birth')}
+  //             />
+  //             {errors.date_of_birth && (
+  //               <p className="text-sm text-red-500">{errors.date_of_birth.message}</p>
+  //             )}
+  //           </div>
+            
+  //           <div className="space-y-2">
+  //             <Label htmlFor="father_mobile_number">Father's Mobile Number</Label>
+  //             <Input
+  //               id="father_mobile_number"
+  //               type="tel"
+  //               {...register('father_mobile_number')}
+  //             />
+  //             {errors.father_mobile_number && (
+  //               <p className="text-sm text-red-500">{errors.father_mobile_number.message}</p>
+  //             )}
+  //           </div>
+            
+  //           <div className="space-y-2">
+  //             <Label htmlFor="field_of_study">Field of Study</Label>
+  //             <Controller
+  //               name="field_of_study"
+  //               control={control}
+  //               render={({ field }) => (
+  //                 <Select 
+  //                   value={field.value} 
+  //                   onValueChange={field.onChange}
+  //                 >
+  //                   <SelectTrigger>
+  //                     <SelectValue placeholder="Select field of study" />
+  //                   </SelectTrigger>
+  //                   <SelectContent>
+  //                     {FIELD_OPTIONS.map((fieldOption) => (
+  //                       <SelectItem key={fieldOption} value={fieldOption}>
+  //                         {fieldOption}
+  //                       </SelectItem>
+  //                     ))}
+  //                   </SelectContent>
+  //                 </Select>
+  //               )}
+  //             />
+  //             {errors.field_of_study && (
+  //               <p className="text-sm text-red-500">{errors.field_of_study.message}</p>
+  //             )}
+  //           </div>
+            
+  //           <div className="space-y-2">
+  //             <Label htmlFor="branch">Branch</Label>
+  //             <Controller
+  //               name="branch"
+  //               control={control}
+  //               render={({ field }) => (
+  //                 <Select 
+  //                   value={field.value} 
+  //                   onValueChange={field.onChange}
+  //                   disabled={!fieldOfStudy}
+  //                 >
+  //                   <SelectTrigger>
+  //                     <SelectValue placeholder={fieldOfStudy ? "Select branch" : "Select field of study first"} />
+  //                   </SelectTrigger>
+  //                   <SelectContent>
+  //                     {fieldOfStudy && 
+  //                       BRANCH_OPTIONS[fieldOfStudy]?.map((branch) => (
+  //                         <SelectItem key={branch} value={branch}>
+  //                           {branch}
+  //                         </SelectItem>
+  //                       ))}
+  //                   </SelectContent>
+  //                 </Select>
+  //               )}
+  //             />
+  //             {errors.branch && (
+  //               <p className="text-sm text-red-500">{errors.branch.message}</p>
+  //             )}
+  //           </div>
+            
+  //           <div className="space-y-2 md:col-span-2">
+  //             <Label htmlFor="address">Address</Label>
+  //             <Textarea
+  //               id="address"
+  //               {...register('address')}
+  //               rows={3}
+  //             />
+  //             {errors.address && (
+  //               <p className="text-sm text-red-500">{errors.address.message}</p>
+  //             )}
+  //           </div>
+  //         </div>
+          
+  //         {error && (
+  //           <Alert variant="destructive">
+  //             <AlertCircle className="h-4 w-4" />
+  //             <AlertDescription>{error}</AlertDescription>
+  //           </Alert>
+  //         )}
+          
+  //         {success && (
+  //           <Alert variant="default" className="bg-green-50 text-green-800 border-green-200">
+  //             <CheckCircle2 className="h-4 w-4 text-green-600" />
+  //             <AlertDescription>{success}</AlertDescription>
+  //           </Alert>
+  //         )}
+          
+  //         <div className="flex flex-wrap justify-end gap-2">
+  //           <Button
+  //             type="button"
+  //             variant="outline"
+  //             onClick={onCancel}
+  //             disabled={loading}
+  //           >
+  //             Cancel
+  //           </Button>
+  //           <Button
+  //             type="submit"
+  //             disabled={loading || (!hasChanges && isDirty)}
+  //           >
+  //             {loading ? 'Saving...' : !hasChanges ? 'No Changes' : 'Save Changes'}
+  //           </Button>
+  //         </div>
+  //       </form>
+  //     </CardContent>
+  //   </Card>
+  // );
+
   return (
-    <Card className="shadow-none border-none">
+    <Card className="shadow-md border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
       <CardContent className="p-0">
-        <div className="mb-4">
-          <Alert variant="default" className="bg-blue-50 border-blue-200">
-            <Info className="h-4 w-4 text-blue-500" />
-            <AlertDescription className="flex items-center justify-between">
-              <span>Please enter your information accurately as per official records.</span>
+        <div className="p-4 md:p-6">
+          <div className="mb-6">
+            <Alert variant="default" className="bg-blue-50 border-blue-200 flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="flex items-center">
+                <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mr-2" />
+                <AlertDescription className="text-blue-700">
+                  Please enter information accurately as per official records.
+                </AlertDescription>
+              </div>
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setShowGuidelines(!showGuidelines)}
-                className="text-blue-600 hover:text-blue-800"
+                className="text-blue-600 hover:text-blue-800 mt-2 sm:mt-0 sm:ml-auto px-3"
               >
-                {showGuidelines ? 'Hide Guidelines' : 'View Input Guidelines'}
+                {showGuidelines ? 'Hide Guidelines' : 'View Guidelines'}
               </Button>
-            </AlertDescription>
-          </Alert>
+            </Alert>
+            
+            {showGuidelines && (
+              <div className="mt-4 p-4 bg-gray-50 rounded-md border animate-fadeIn">
+                <h3 className="font-medium mb-2 text-gray-700">Input Guidelines:</h3>
+                <ul className="text-sm space-y-2 text-gray-600">
+                  {Object.entries(INPUT_GUIDELINES).map(([field, guideline]) => (
+                    <li key={field} className="flex flex-col sm:flex-row sm:gap-2">
+                      <span className="font-medium text-gray-700">{field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}:</span>
+                      <span>{guideline}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
           
-          {showGuidelines && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-md border">
-              <h3 className="font-medium mb-2">Input Guidelines:</h3>
-              <ul className="text-sm space-y-1">
-                {Object.entries(INPUT_GUIDELINES).map(([field, guideline]) => (
-                  <li key={field} className="flex gap-2">
-                    <span className="font-medium min-w-32">{field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}:</span>
-                    <span>{guideline}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-        
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="roll_no">Roll No</Label>
-              <Input
-                id="roll_no"
-                {...register('roll_no')}
-                readOnly
-                className="bg-gray-50"
-              />
-              {errors.roll_no && (
-                <p className="text-sm text-red-500">{errors.roll_no.message}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                {...register('name')}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                {...register('email')}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="mobile_number">Mobile Number</Label>
-              <Input
-                id="mobile_number"
-                type="tel"
-                {...register('mobile_number')}
-              />
-              {errors.mobile_number && (
-                <p className="text-sm text-red-500">{errors.mobile_number.message}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="date_of_birth">Date of Birth</Label>
-              <Input
-                id="date_of_birth"
-                type="date"
-                {...register('date_of_birth')}
-              />
-              {errors.date_of_birth && (
-                <p className="text-sm text-red-500">{errors.date_of_birth.message}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="father_mobile_number">Father's Mobile Number</Label>
-              <Input
-                id="father_mobile_number"
-                type="tel"
-                {...register('father_mobile_number')}
-              />
-              {errors.father_mobile_number && (
-                <p className="text-sm text-red-500">{errors.father_mobile_number.message}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="field_of_study">Field of Study</Label>
-              <Controller
-                name="field_of_study"
-                control={control}
-                render={({ field }) => (
-                  <Select 
-                    value={field.value} 
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select field of study" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {FIELD_OPTIONS.map((fieldOption) => (
-                        <SelectItem key={fieldOption} value={fieldOption}>
-                          {fieldOption}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="roll_no" className="text-gray-700">Roll No</Label>
+                <Input
+                  id="roll_no"
+                  {...register('roll_no')}
+                  readOnly
+                  className="bg-gray-50 focus:border-blue-300"
+                />
+                {errors.roll_no && (
+                  <p className="text-sm text-red-500 mt-1">{errors.roll_no.message}</p>
                 )}
-              />
-              {errors.field_of_study && (
-                <p className="text-sm text-red-500">{errors.field_of_study.message}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="branch">Branch</Label>
-              <Controller
-                name="branch"
-                control={control}
-                render={({ field }) => (
-                  <Select 
-                    value={field.value} 
-                    onValueChange={field.onChange}
-                    disabled={!fieldOfStudy}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={fieldOfStudy ? "Select branch" : "Select field of study first"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {fieldOfStudy && 
-                        BRANCH_OPTIONS[fieldOfStudy]?.map((branch) => (
-                          <SelectItem key={branch} value={branch}>
-                            {branch}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-700">Name</Label>
+                <Input
+                  id="name"
+                  {...register('name')}
+                  className="focus:border-blue-300"
+                />
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  {...register('email')}
+                  className="focus:border-blue-300"
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="mobile_number" className="text-gray-700">Mobile Number</Label>
+                <Input
+                  id="mobile_number"
+                  type="tel"
+                  {...register('mobile_number')}
+                  className="focus:border-blue-300"
+                />
+                {errors.mobile_number && (
+                  <p className="text-sm text-red-500 mt-1">{errors.mobile_number.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="date_of_birth" className="text-gray-700">Date of Birth</Label>
+                <Input
+                  id="date_of_birth"
+                  type="date"
+                  {...register('date_of_birth')}
+                  className="focus:border-blue-300"
+                />
+                {errors.date_of_birth && (
+                  <p className="text-sm text-red-500 mt-1">{errors.date_of_birth.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="father_mobile_number" className="text-gray-700">Father's Mobile Number</Label>
+                <Input
+                  id="father_mobile_number"
+                  type="tel"
+                  {...register('father_mobile_number')}
+                  className="focus:border-blue-300"
+                />
+                {errors.father_mobile_number && (
+                  <p className="text-sm text-red-500 mt-1">{errors.father_mobile_number.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="field_of_study" className="text-gray-700">Field of Study</Label>
+                <Controller
+                  name="field_of_study"
+                  control={control}
+                  render={({ field }) => (
+                    <Select 
+                      value={field.value} 
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger className="focus:border-blue-300">
+                        <SelectValue placeholder="Select field of study" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {FIELD_OPTIONS.map((fieldOption) => (
+                          <SelectItem key={fieldOption} value={fieldOption}>
+                            {fieldOption}
                           </SelectItem>
                         ))}
-                    </SelectContent>
-                  </Select>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.field_of_study && (
+                  <p className="text-sm text-red-500 mt-1">{errors.field_of_study.message}</p>
                 )}
-              />
-              {errors.branch && (
-                <p className="text-sm text-red-500">{errors.branch.message}</p>
-              )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="branch" className="text-gray-700">Branch</Label>
+                <Controller
+                  name="branch"
+                  control={control}
+                  render={({ field }) => (
+                    <Select 
+                      value={field.value} 
+                      onValueChange={field.onChange}
+                      disabled={!fieldOfStudy}
+                    >
+                      <SelectTrigger className="focus:border-blue-300">
+                        <SelectValue placeholder={fieldOfStudy ? "Select branch" : "Select field of study first"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fieldOfStudy && 
+                          BRANCH_OPTIONS[fieldOfStudy]?.map((branch) => (
+                            <SelectItem key={branch} value={branch}>
+                              {branch}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.branch && (
+                  <p className="text-sm text-red-500 mt-1">{errors.branch.message}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="address" className="text-gray-700">Address</Label>
+                <Textarea
+                  id="address"
+                  {...register('address')}
+                  rows={3}
+                  className="focus:border-blue-300"
+                />
+                {errors.address && (
+                  <p className="text-sm text-red-500 mt-1">{errors.address.message}</p>
+                )}
+              </div>
             </div>
             
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="address">Address</Label>
-              <Textarea
-                id="address"
-                {...register('address')}
-                rows={3}
-              />
-              {errors.address && (
-                <p className="text-sm text-red-500">{errors.address.message}</p>
-              )}
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            
+            {success && (
+              <Alert variant="default" className="bg-green-50 text-green-800 border-green-200">
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <AlertDescription>{success}</AlertDescription>
+              </Alert>
+            )}
+            
+            <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={loading}
+                className="order-2 sm:order-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={loading || (!hasChanges && isDirty)}
+                className="order-1 sm:order-2 bg-blue-600 hover:bg-blue-700"
+              >
+                {loading ? 'Saving...' : !hasChanges ? 'No Changes' : 'Save Changes'}
+              </Button>
             </div>
-          </div>
-          
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          
-          {success && (
-            <Alert variant="default" className="bg-green-50 text-green-800 border-green-200">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <AlertDescription>{success}</AlertDescription>
-            </Alert>
-          )}
-          
-          <div className="flex flex-wrap justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={loading || (!hasChanges && isDirty)}
-            >
-              {loading ? 'Saving...' : !hasChanges ? 'No Changes' : 'Save Changes'}
-            </Button>
-          </div>
-        </form>
+          </form>
+        </div>
       </CardContent>
     </Card>
   );
+
 };
 
 export default UpdateDetailsForm;

@@ -38,6 +38,7 @@ class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     lookup_field = 'roll_no'
     
+    # Update in StudentViewSet.perform_update in backend 
     def perform_update(self, serializer):
         # Get the original instance before update
         original_instance = self.get_object()
@@ -46,20 +47,13 @@ class StudentViewSet(viewsets.ModelViewSet):
         # Save the updated instance
         instance = serializer.save()
         
-        # Check if mobile number is changed
-        # if original_data['mobile_number'] != instance.mobile_number:
-        #     instance.is_mobile_verified = False
-        #     instance.save()
-            
-        instance.is_mobile_verified = False
-        # Mark data as not verified when updated
-        instance.is_data_verified = False
-        instance.save()
-        
-        # Create update history records for changed fields
+        # If any data has changed, mark as not verified
+        has_changes = False
         new_data = serializer.data
+        
         for field in new_data:
             if field in original_data and original_data[field] != new_data[field]:
+                has_changes = True
                 UpdateHistory.objects.create(
                     student=instance,
                     field_name=field,
@@ -67,6 +61,16 @@ class StudentViewSet(viewsets.ModelViewSet):
                     new_value=str(new_data[field])
                 )
     
+        if has_changes:
+            # Mark data as not verified when updated
+            instance.is_data_verified = False
+            
+            # If mobile number has changed, also mark mobile as not verified
+            if original_data['mobile_number'] != instance.mobile_number:
+                instance.is_mobile_verified = False
+            
+            instance.save()
+        
     @action(detail=True, methods=['post'])
     def verify(self, request, roll_no=None):
         student = self.get_object()
@@ -89,6 +93,37 @@ class StudentViewSet(viewsets.ModelViewSet):
         history = UpdateHistory.objects.filter(student=student)
         serializer = UpdateHistorySerializer(history, many=True)
         return Response(serializer.data)
+    
+
+    # def perform_update(self, serializer):
+    #     # Get the original instance before update
+    #     original_instance = self.get_object()
+    #     original_data = StudentSerializer(original_instance).data
+        
+    #     # Save the updated instance
+    #     instance = serializer.save()
+        
+    #     # Check if mobile number is changed
+    #     if original_data['mobile_number'] != instance.mobile_number:
+    #         instance.is_mobile_verified = False
+    #         instance.save()
+            
+    #     instance.is_mobile_verified = False
+    #     # Mark data as not verified when updated
+    #     instance.is_data_verified = False
+    #     instance.save()
+        
+    #     # Create update history records for changed fields
+    #     new_data = serializer.data
+    #     for field in new_data:
+    #         if field in original_data and original_data[field] != new_data[field]:
+    #             UpdateHistory.objects.create(
+    #                 student=instance,
+    #                 field_name=field,
+    #                 old_value=str(original_data[field]),
+    #                 new_value=str(new_data[field])
+    #             )
+    
 
 
 # from django.shortcuts import render

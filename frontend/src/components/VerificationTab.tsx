@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Alert, AlertDescription } from './ui/alert';
-import { AlertCircle, CheckCircle2, Info, CheckSquare, ArrowRight } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Info, CheckSquare, ArrowRight, ShieldCheck, UserCircle } from 'lucide-react';
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import OtpVerification from './OtpVerification';
@@ -26,8 +26,11 @@ const VerificationTab = () => {
 
   // Validation schema for comprehensive checks
   const validationSchema = z.object({
-    name: z.string().min(3, 'Name must be at least 3 characters long')
-      .refine(name => name.trim().split(/\s+/).length >= 2, 'Name should contain at least two words'),
+    name: z.string()
+        .min(1, "Name is required")
+        .refine((value) => value.trim().split(/\s+/).length == 3, {
+          message: "Name must contain at least three words",
+        }),
     email: z.string().email('Email must be a valid email address'),
     mobile_number: z.string()
       .refine(val => /^\+[1-9]\d{1,14}$/.test(val), 'Mobile number must include country code (e.g., +91...)'),
@@ -97,7 +100,7 @@ const VerificationTab = () => {
     // Use react-router's navigate to go to the current URL but with update tab active
     // You could also use a state management approach instead
     const currentPath = window.location.pathname;
-    navigate(currentPath, { state: { activeTab: 'history' } });
+    navigate(currentPath, { state: { activeTab: 'update' } });
   };
   
   const handleVerify = async () => {
@@ -130,49 +133,247 @@ const VerificationTab = () => {
   };
   
   // Format date for display
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  };
+  // const formatDate = (dateString: string) => {
+  //   if (!dateString) return '-';
+  //   const date = new Date(dateString);
+  //   return date.toLocaleDateString();
+  // };
   
+  // return (
+  //   <Card className="overflow-hidden">
+  //     <CardHeader className="bg-white border-b">
+  //       <CardTitle className="text-xl">Data Verification</CardTitle>
+  //       <CardDescription>
+  //         Verify your personal and academic information
+  //       </CardDescription>
+  //     </CardHeader>
+      
+  //     <CardContent className="p-6">
+  //       {error && (
+  //         <Alert variant="destructive" className="mb-6">
+  //           <AlertCircle className="h-4 w-4" />
+  //           <AlertDescription>{error}</AlertDescription>
+  //         </Alert>
+  //       )}
+        
+  //       {success && (
+  //         <Alert variant="default" className="mb-6 bg-green-50 text-green-800 border-green-200">
+  //           <CheckCircle2 className="h-4 w-4 text-green-600" />
+  //           <AlertDescription>{success}</AlertDescription>
+  //         </Alert>
+  //       )}
+        
+  //       {(!hasValidData || validationErrors.length > 0) && (
+  //         <Alert variant="default" className="mb-6 bg-yellow-50 text-yellow-800 border-yellow-200">
+  //           <Info className="h-4 w-4" />
+  //           <AlertDescription className="space-y-2">
+  //             <p>Please update the following information before verification:</p>
+  //             <ul className="list-disc pl-5 space-y-1">
+  //               {validationErrors.map((error, index) => (
+  //                 <li key={index}>{error}</li>
+  //               ))}
+  //             </ul>
+  //             <Button 
+  //               variant="outline" 
+  //               className="mt-2 border-yellow-300 text-yellow-800 hover:bg-yellow-100"
+  //               onClick={redirectToUpdateTab}
+  //             >
+  //               Go to Update Details <ArrowRight className="ml-2 h-4 w-4" />
+  //             </Button>
+  //           </AlertDescription>
+  //         </Alert>
+  //       )}
+        
+  //       {showOtpVerification ? (
+  //         <OtpVerification 
+  //           onVerificationComplete={() => {
+  //             setShowOtpVerification(false);
+  //             student.setStudentData({ ...student, is_mobile_verified: true });
+  //           }}
+  //         />
+  //       ) : (
+  //         <>
+  //           <div className="mb-6">
+  //             <h3 className="text-lg font-medium mb-2">Verification Status</h3>
+  //             <div className="flex items-center gap-2">
+  //               {student.is_data_verified ? (
+  //                 <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">
+  //                   Data Verified
+  //                 </Badge>
+  //               ) : (
+  //                 <Badge variant="outline" className="bg-yellow-50 text-yellow-800 hover:bg-yellow-50">
+  //                   Verification Pending
+  //                 </Badge>
+  //               )}
+  //             </div>
+  //           </div>
+            
+  //           <div className="mb-6">
+  //             <h3 className="text-lg font-medium mb-4">Current Information</h3>
+  //             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-md">
+  //               <div className="space-y-4">
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Roll Number</h4>
+  //                   <p className="font-medium">{student.roll_no || '-'}</p>
+  //                 </div>
+                  
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Full Name</h4>
+  //                   <p className="font-medium">{student.name || '-'}</p>
+  //                 </div>
+                  
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Email Address</h4>
+  //                   <p className="font-medium">{student.email || '-'}</p>
+  //                 </div>
+                  
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Mobile Number</h4>
+  //                   <p className="font-medium">{student.mobile_number || '-'}</p>
+  //                 </div>
+                  
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Date of Birth</h4>
+  //                   <p className="font-medium">{formatDate(student.date_of_birth)}</p>
+  //                 </div>
+  //               </div>
+                
+  //               <div className="space-y-4">
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Father's Mobile Number</h4>
+  //                   <p className="font-medium">{student.father_mobile_number || '-'}</p>
+  //                 </div>
+                  
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Field of Study</h4>
+  //                   <p className="font-medium">{student.field_of_study || '-'}</p>
+  //                 </div>
+                  
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Branch</h4>
+  //                   <p className="font-medium">{student.branch || '-'}</p>
+  //                 </div>
+                  
+  //                 <div>
+  //                   <h4 className="text-sm font-medium text-gray-500">Address</h4>
+  //                   <p className="font-medium">{student.address || '-'}</p>
+  //                 </div>
+  //               </div>
+  //             </div>
+  //           </div>
+            
+  //           <div className="mb-6">
+  //             <div className="border p-4 rounded-md bg-blue-50">
+  //               <div className="flex items-start space-x-3 mb-4">
+  //                 <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+  //                 <div>
+  //                   <h3 className="font-medium text-blue-800">Important Information</h3>
+  //                   <p className="text-sm text-blue-700 mt-1">
+  //                     By verifying your data, you confirm that all the information provided is accurate and complete.
+  //                     Once verified, some information cannot be changed without administrative approval.
+  //                   </p>
+  //                 </div>
+  //               </div>
+                
+  //               <div className="flex items-center space-x-2 ml-8">
+  //                 <Checkbox 
+  //                   id="consent" 
+  //                   checked={consentChecked}
+  //                   onCheckedChange={(checked) => {
+  //                     setConsentChecked(checked === true);
+  //                   }}
+  //                 />
+  //                 <Label 
+  //                   htmlFor="consent" 
+  //                   className="text-sm font-medium text-blue-700 leading-none"
+  //                 >
+  //                   I confirm that all information provided is accurate and complete
+  //                 </Label>
+  //               </div>
+  //             </div>
+  //           </div>
+            
+  //           <div className="flex flex-col sm:flex-row gap-2 items-center justify-between">
+  //             <div>
+  //               {(!hasValidData || validationErrors.length > 0) && (
+  //                 <p className="text-sm text-yellow-600 flex items-center gap-1">
+  //                   <AlertCircle className="h-4 w-4" />
+  //                   Please update your information first
+  //                 </p>
+  //               )}
+  //             </div>
+              
+  //             <div className="flex gap-2">
+  //               {!student.is_data_verified && (
+  //                 <Button
+  //                   variant="default"
+  //                   onClick={handleVerify}
+  //                   disabled={loading || !consentChecked || !hasValidData || validationErrors.length > 0}
+  //                   className="flex items-center gap-2"
+  //                 >
+  //                   {loading ? 'Processing...' : 'Verify Data'}
+  //                   {!loading && <CheckSquare className="h-4 w-4" />}
+  //                 </Button>
+  //               )}
+                
+  //               {student.is_data_verified && (
+  //                 <div className="flex items-center gap-2 text-green-600">
+  //                   <CheckCircle2 className="h-5 w-5" />
+  //                   <span className="font-medium">Data Already Verified</span>
+  //                 </div>
+  //               )}
+  //             </div>
+  //           </div>
+  //         </>
+  //       )}
+  //     </CardContent>
+  //   </Card>
+  // );
+
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="bg-white border-b">
-        <CardTitle className="text-xl">Data Verification</CardTitle>
-        <CardDescription>
-          Verify your personal and academic information
-        </CardDescription>
+    <Card className="overflow-hidden shadow-md border rounded-lg hover:shadow-lg transition-shadow">
+      <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+        <div className="flex items-center gap-3">
+          <div className="bg-blue-100 p-2 rounded-full">
+            <ShieldCheck className="h-5 w-5 text-blue-600" />
+          </div>
+          <div>
+            <CardTitle className="text-xl text-blue-700">Data Verification</CardTitle>
+            <CardDescription className="text-blue-600/70">
+              Verify your personal and academic information
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
       
-      <CardContent className="p-6">
+      <CardContent className="p-4 md:p-6">
         {error && (
-          <Alert variant="destructive" className="mb-6">
+          <Alert variant="destructive" className="mb-6 animate-fadeIn">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
         
         {success && (
-          <Alert variant="default" className="mb-6 bg-green-50 text-green-800 border-green-200">
+          <Alert variant="default" className="mb-6 bg-green-50 text-green-800 border-green-200 animate-fadeIn">
             <CheckCircle2 className="h-4 w-4 text-green-600" />
             <AlertDescription>{success}</AlertDescription>
           </Alert>
         )}
         
         {(!hasValidData || validationErrors.length > 0) && (
-          <Alert variant="default" className="mb-6 bg-yellow-50 text-yellow-800 border-yellow-200">
-            <Info className="h-4 w-4" />
+          <Alert variant="default" className="mb-6 bg-yellow-50 text-yellow-800 border-yellow-200 animate-fadeIn">
+            <Info className="h-4 w-4 flex-shrink-0" />
             <AlertDescription className="space-y-2">
               <p>Please update the following information before verification:</p>
-              <ul className="list-disc pl-5 space-y-1">
+              <ul className="list-disc pl-5 space-y-1 text-sm">
                 {validationErrors.map((error, index) => (
                   <li key={index}>{error}</li>
                 ))}
               </ul>
               <Button 
                 variant="outline" 
-                className="mt-2 border-yellow-300 text-yellow-800 hover:bg-yellow-100"
+                className="mt-3 border-yellow-300 text-yellow-800 hover:bg-yellow-100 w-full sm:w-auto"
                 onClick={redirectToUpdateTab}
               >
                 Go to Update Details <ArrowRight className="ml-2 h-4 w-4" />
@@ -191,76 +392,72 @@ const VerificationTab = () => {
         ) : (
           <>
             <div className="mb-6">
-              <h3 className="text-lg font-medium mb-2">Verification Status</h3>
-              <div className="flex items-center gap-2">
-                {student.is_data_verified ? (
-                  <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">
-                    Data Verified
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="bg-yellow-50 text-yellow-800 hover:bg-yellow-50">
-                    Verification Pending
-                  </Badge>
-                )}
-              </div>
+              <h3 className="text-lg font-medium mb-2 flex items-center gap-2 text-gray-700">
+                <Badge variant={student.is_data_verified ? "default" : "outline"} className={student.is_data_verified ? 
+                  "bg-green-100 text-green-800 hover:bg-green-100" : 
+                  "bg-yellow-50 text-yellow-800 hover:bg-yellow-50"}>
+                  {student.is_data_verified ? "Verified" : "Pending"}
+                </Badge>
+                Verification Status
+              </h3>
             </div>
             
             <div className="mb-6">
-              <h3 className="text-lg font-medium mb-4">Current Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-md">
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Roll Number</h4>
-                    <p className="font-medium">{student.roll_no || '-'}</p>
+              <div className="bg-gray-50 rounded-lg p-4 border">
+                <h3 className="text-lg font-medium mb-4 text-gray-700 flex items-center gap-2">
+                  <UserCircle className="h-5 w-5 text-blue-600" />
+                  Current Information
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">Roll Number</h4>
+                      <p className="font-medium text-gray-800">{student.roll_no || '-'}</p>
+                    </div>
+                    
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">Full Name</h4>
+                      <p className="font-medium text-gray-800">{student.name || '-'}</p>
+                    </div>
+                    
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">Email Address</h4>
+                      <p className="font-medium text-gray-800 break-words">{student.email || '-'}</p>
+                    </div>
+                    
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">Mobile Number</h4>
+                      <p className="font-medium text-gray-800">{student.mobile_number || '-'}</p>
+                    </div>
                   </div>
                   
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Full Name</h4>
-                    <p className="font-medium">{student.name || '-'}</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Email Address</h4>
-                    <p className="font-medium">{student.email || '-'}</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Mobile Number</h4>
-                    <p className="font-medium">{student.mobile_number || '-'}</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Date of Birth</h4>
-                    <p className="font-medium">{formatDate(student.date_of_birth)}</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Father's Mobile Number</h4>
-                    <p className="font-medium">{student.father_mobile_number || '-'}</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Field of Study</h4>
-                    <p className="font-medium">{student.field_of_study || '-'}</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Branch</h4>
-                    <p className="font-medium">{student.branch || '-'}</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Address</h4>
-                    <p className="font-medium">{student.address || '-'}</p>
+                  <div className="space-y-3">
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">Father's Mobile Number</h4>
+                      <p className="font-medium text-gray-800">{student.father_mobile_number || '-'}</p>
+                    </div>
+                    
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">Field of Study</h4>
+                      <p className="font-medium text-gray-800">{student.field_of_study || '-'}</p>
+                    </div>
+                    
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">Branch</h4>
+                      <p className="font-medium text-gray-800">{student.branch || '-'}</p>
+                    </div>
+                    
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">Address</h4>
+                      <p className="font-medium text-gray-800">{student.address || '-'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             
             <div className="mb-6">
-              <div className="border p-4 rounded-md bg-blue-50">
+              <div className="border p-4 rounded-lg bg-blue-50 shadow-sm">
                 <div className="flex items-start space-x-3 mb-4">
                   <Info className="h-5 w-5 text-blue-600 mt-0.5" />
                   <div>
@@ -279,10 +476,11 @@ const VerificationTab = () => {
                     onCheckedChange={(checked) => {
                       setConsentChecked(checked === true);
                     }}
+                    className="text-blue-600 border-blue-400 data-[state=checked]:bg-blue-600"
                   />
                   <Label 
                     htmlFor="consent" 
-                    className="text-sm font-medium text-blue-700 leading-none"
+                    className="text-sm font-medium text-blue-700 leading-none cursor-pointer"
                   >
                     I confirm that all information provided is accurate and complete
                   </Label>
@@ -290,7 +488,7 @@ const VerificationTab = () => {
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-2 items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
               <div>
                 {(!hasValidData || validationErrors.length > 0) && (
                   <p className="text-sm text-yellow-600 flex items-center gap-1">
@@ -300,13 +498,13 @@ const VerificationTab = () => {
                 )}
               </div>
               
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full sm:w-auto">
                 {!student.is_data_verified && (
                   <Button
                     variant="default"
                     onClick={handleVerify}
                     disabled={loading || !consentChecked || !hasValidData || validationErrors.length > 0}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
                   >
                     {loading ? 'Processing...' : 'Verify Data'}
                     {!loading && <CheckSquare className="h-4 w-4" />}
@@ -314,7 +512,7 @@ const VerificationTab = () => {
                 )}
                 
                 {student.is_data_verified && (
-                  <div className="flex items-center gap-2 text-green-600">
+                  <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded-md border border-green-200">
                     <CheckCircle2 className="h-5 w-5" />
                     <span className="font-medium">Data Already Verified</span>
                   </div>
@@ -326,6 +524,7 @@ const VerificationTab = () => {
       </CardContent>
     </Card>
   );
+  
 };
 
 export default VerificationTab;

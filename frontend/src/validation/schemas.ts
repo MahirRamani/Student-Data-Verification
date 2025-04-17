@@ -53,18 +53,55 @@ export const studentSchema = z.object({
 });
 
 // Update details form schema
-export const updateDetailsSchema = studentSchema.partial();
+// export const updateDetailsSchema = studentSchema.partial();
+// Update the validation schema for name
+// In src/validation/schemas.ts
+// import { z } from 'zod';
+
+export const updateDetailsSchema = z.object({
+  roll_no: z.string().min(1, 'Roll number is required'),
+  name: z.string()
+    .min(1, 'Name is required')
+    .max(100, 'Name must be at most 100 characters')
+    .refine(name => {
+      const wordCount = name.trim().split(/\s+/).length;
+      return wordCount <= 3;
+    }, { message: "Name should not contain more than 3 words" }),
+  email: z.string().email('Please enter a valid email address'),
+  mobile_number: z.string()
+    .regex(/^\+?[0-9]{10,15}$/, "Mobile number must be between 10-15 digits with proper country code"),
+  father_mobile_number: z.string()
+    .regex(/^\+?[0-9]{10,15}$/, "Father's mobile number must be between 10-15 digits with proper country code"),
+  date_of_birth: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date of birth must be in YYYY-MM-DD format'),
+  address: z.string().min(1, 'Address is required'),
+  field_of_study: z.string().min(1, 'Field of study is required'),
+  branch: z.string().min(1, 'Branch is required'),
+  // is_mobile_verified: z.boolean(),
+  // is_data_verified: z.boolean(),
+});
+
+export type UpdateDetailsInput = z.infer<typeof updateDetailsSchema>;
+
+export const otpVerificationSchema = z.object({
+  mobile_number: z.string()
+    .min(10, 'Mobile number should be at least 10 digits')
+    .max(15, 'Mobile number should not exceed 15 digits'),
+  otp: z.string()
+    .length(6, 'OTP must be 6 digits')
+    .regex(/^\d+$/, 'OTP must contain only numbers'),
+});
 
 
 // OTP verification schema
-export const otpVerificationSchema = z.object({
-  otp: z.string().length(6, "OTP must be 6 digits"),
-  mobile_number: z.string().regex(/^\+?[0-9]{10,15}$/, "Invalid mobile number format"),
-});
+// export const otpVerificationSchema = z.object({
+//   otp: z.string().length(6, "OTP must be 6 digits"),
+//   mobile_number: z.string().regex(/^\+?[0-9]{10,15}$/, "Invalid mobile number format"),
+// });
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type StudentData = z.infer<typeof studentSchema>;
-export type UpdateDetailsInput = z.infer<typeof updateDetailsSchema>;
+// export type UpdateDetailsInput = z.infer<typeof updateDetailsSchema>;
 export type OtpVerificationInput = z.infer<typeof otpVerificationSchema>;
 
 
