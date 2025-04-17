@@ -1,20 +1,20 @@
 // src/App.tsx
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import StudentDashboard from './components/StudentDashboard';
-import { useEffect } from 'react';
-import { useStudentStore } from './store/studentStore';
+// import { useEffect } from 'react';
+// import { useStudentStore } from './store/studentStore';
 
 // Private route component
-const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useStudentStore();
+// const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+//   // const { isAuthenticated } = useStudentStore();
 
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/login" />;
-  // }
+//   // if (!isAuthenticated) {
+//   //   return <Navigate to="/login" />;
+//   // }
 
-  return <>{children}</>;
-};
+//   return <>{children}</>;
+// };
 
 const App = () => {
   // const { isAuthenticated, setStudentData, logout } = useStudentStore();
