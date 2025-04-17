@@ -26,16 +26,16 @@ SECRET_KEY = 'django-insecure-d)wqtc0wsaxe&jx%$nkr^h1f2lm4*v+*#k4j&ioq0bb4s&cu4f
 DEBUG = True
 
 # Correct format - just the hostname without protocol or port for frontend:
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-]
+# ALLOWED_HOSTS = [
+#     'localhost',
+#     '127.0.0.1',
+# ]
 
 # Keep your CORS settings separate:
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://127.0.0.1:5173",
+# ]
 
 CORS_ALLOW_ALL_ORIGINS = True  # For development only
 

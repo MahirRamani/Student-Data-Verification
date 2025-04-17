@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { UpdateDetailsInput } from '../validation/schemas';
 
-const API_URL =  import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8000/api';
+const API_URL =  import.meta.env.VITE_BACKEND_API_URL || 'https://whwp32nl-8000.inc1.devtunnels.ms//api';
 
 const api = axios.create({
   baseURL: API_URL,

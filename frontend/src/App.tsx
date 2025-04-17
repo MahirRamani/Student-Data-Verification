@@ -9,76 +9,76 @@ import { useStudentStore } from './store/studentStore';
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useStudentStore();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" />;
+  // }
 
   return <>{children}</>;
 };
 
 const App = () => {
-  const { isAuthenticated, setStudentData, logout } = useStudentStore();
+  // const { isAuthenticated, setStudentData, logout } = useStudentStore();
 
   // Check for session timeout on initial load
-  useEffect(() => {
-    if (isAuthenticated) {
-      const lastActivity = localStorage.getItem('lastActivity');
-      if (lastActivity) {
-        const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60; // in minutes
-        if (inactiveTime >= 10) { // 10 minutes timeout
-          logout();
-        }
-      }
-    }
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     const lastActivity = localStorage.getItem('lastActivity');
+  //     if (lastActivity) {
+  //       const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60; // in minutes
+  //       if (inactiveTime >= 10) { // 10 minutes timeout
+  //         logout();
+  //       }
+  //     }
+  //   }
 
-    // Try to recover session from localStorage if exists
-    const storedSession = localStorage.getItem('studentSession');
-    if (storedSession && !isAuthenticated) {
-      try {
-        const session = JSON.parse(storedSession);
-        console.log("Session:", session);
+  //   // Try to recover session from localStorage if exists
+  //   const storedSession = localStorage.getItem('studentSession');
+  //   if (storedSession && !isAuthenticated) {
+  //     try {
+  //       const session = JSON.parse(storedSession);
+  //       console.log("Session:", session);
         
-        const lastActivity = localStorage.getItem('firstActivity');
-        console.log("Session:", lastActivity);
+  //       const lastActivity = localStorage.getItem('firstActivity');
+  //       console.log("Session:", lastActivity);
         
 
-        if (lastActivity) {
-          // const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60;
-          if (parseInt(lastActivity) < 1) { // Session still valid
-            setStudentData(session);
-          } else {
-            logout();
-            localStorage.removeItem('studentSession');
-            localStorage.removeItem('lastActivity');
-          }
-        }
-      } catch (error) {
-        console.error('Failed to parse stored session:', error);
-        localStorage.removeItem('studentSession');
-        localStorage.removeItem('lastActivity');
-      }
-    }
-  }, [isAuthenticated, logout, setStudentData]);
+  //       if (lastActivity) {
+  //         // const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60;
+  //         if (parseInt(lastActivity) < 1) { // Session still valid
+  //           setStudentData(session);
+  //         } else {
+  //           logout();
+  //           localStorage.removeItem('studentSession');
+  //           localStorage.removeItem('lastActivity');
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to parse stored session:', error);
+  //       localStorage.removeItem('studentSession');
+  //       localStorage.removeItem('lastActivity');
+  //     }
+  //   }
+  // }, [isAuthenticated, logout, setStudentData]);
 
-  // Store session data when authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      const { 
-        id, roll_no, name, email, mobile_number, father_mobile_number, 
-        date_of_birth, address, field_of_study, branch, 
-        is_data_verified, is_mobile_verified 
-      } = useStudentStore.getState();
+  // // Store session data when authenticated
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     const { 
+  //       id, roll_no, name, email, mobile_number, father_mobile_number, 
+  //       date_of_birth, address, field_of_study, branch, 
+  //       is_data_verified, is_mobile_verified 
+  //     } = useStudentStore.getState();
 
-      const sessionData = {
-        id, roll_no, name, email, mobile_number, father_mobile_number,
-        date_of_birth, address, field_of_study, branch,
-        is_data_verified, is_mobile_verified
-      };
+  //     const sessionData = {
+  //       id, roll_no, name, email, mobile_number, father_mobile_number,
+  //       date_of_birth, address, field_of_study, branch,
+  //       is_data_verified, is_mobile_verified
+  //     };
 
-      localStorage.setItem('studentSession', JSON.stringify(sessionData));
-      localStorage.setItem('lastActivity', Date.now().toString());
-    }
-  }, [isAuthenticated]);
+  //     localStorage.setItem('studentSession', JSON.stringify(sessionData));
+  //     localStorage.setItem('lastActivity', Date.now().toString());
+  //   }
+  // }, [isAuthenticated]);
 
   return (
     <Router>
@@ -87,13 +87,13 @@ const App = () => {
         <Route 
           path="/student/:rollNo" 
           element={
-            <PrivateRoute>
+            // <PrivateRoute>
               <StudentDashboard />
-            </PrivateRoute>
+            // </PrivateRoute>
           } 
         />
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        {/* <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/login" />} /> */}
       </Routes>
     </Router>
   );

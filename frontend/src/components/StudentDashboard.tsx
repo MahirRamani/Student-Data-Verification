@@ -36,18 +36,18 @@
         setLoading(true);
         setError(null);
         
-        if (!student.isAuthenticated) {
-          navigate('/login');
-          return;
-        }
+        // if (!student.isAuthenticated) {
+        //   navigate('/login');
+        //   return;
+        // }
         
-        if (student.roll_no !== rollNo) {
-          navigate(`/student/${student.roll_no}`);
-          return;
-        }
+        // if (student.roll_no !== rollNo) {
+        //   navigate(`/student/${student.roll_no}`);
+        //   return;
+        // }
         
         try {
-          const data = await getStudentData(student.roll_no);
+          const data = await getStudentData(rollNo?.toString() || "757");
           student.setStudentData(data);
         } catch (err: any) {
           console.error('Failed to fetch student data:', err);
