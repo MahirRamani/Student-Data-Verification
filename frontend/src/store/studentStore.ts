@@ -11,7 +11,6 @@ interface StudentStore extends Student {
 
 export const useStudentStore = create<StudentStore>((set) => {
   // Check for existing session on store initialization
-  const storedSession = localStorage.getItem('studentSession');
   let initialState = {
     id: '',
     roll_no: '',
@@ -28,34 +27,37 @@ export const useStudentStore = create<StudentStore>((set) => {
     isAuthenticated: false,
     lastActivity: Date.now()
   };
-
-  // If there's a stored session, use it as initial state
-  if (storedSession) {
-    try {
-      const parsedSession = JSON.parse(storedSession);
-      const lastActivity = localStorage.getItem('lastActivity');
+  
+  // const storedSession = localStorage.getItem('studentSession');
+  // // If there's a stored session, use it as initial state
+  // if (storedSession) {
+  //   try {
+  //     const parsedSession = JSON.parse(storedSession);
+  //     const lastActivity = localStorage.getItem('lastActivity');
       
-      if (lastActivity) {
-        const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60;
-        if (inactiveTime < 30) { // 30 minutes timeout
-          initialState = {
-            ...initialState,
-            ...parsedSession,
-            isAuthenticated: true,
-            lastActivity: parseInt(lastActivity)
-          };
-        } else {
-          // Session timed out, remove it
-          localStorage.removeItem('studentSession');
-          localStorage.removeItem('lastActivity');
-        }
-      }
-    } catch (error) {
-      console.error('Failed to parse stored session:', error);
-      localStorage.removeItem('studentSession');
-      localStorage.removeItem('lastActivity');
-    }
-  }
+  //     if (lastActivity) {
+  //       const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60;
+  //       console.log("Inactive time:", inactiveTime);
+        
+  //       if (inactiveTime < 1) { // 30 minutes timeout
+  //         initialState = {
+  //           ...initialState,
+  //           ...parsedSession,
+  //           isAuthenticated: true,
+  //           lastActivity: parseInt(lastActivity)
+  //         };
+  //       } else {
+  //         // Session timed out, remove it
+  //         localStorage.removeItem('studentSession');
+  //         localStorage.removeItem('lastActivity');
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to parse stored session:', error);
+  //     localStorage.removeItem('studentSession');
+  //     localStorage.removeItem('lastActivity');
+  //   }
+  // }
 
   return {
     ...initialState,

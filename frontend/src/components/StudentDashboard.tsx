@@ -36,15 +36,15 @@
         setLoading(true);
         setError(null);
         
-        // if (!student.isAuthenticated) {
-        //   navigate('/login');
-        //   return;
-        // }
+        if (!student.isAuthenticated) {
+          navigate('/login');
+          return;
+        }
         
-        // if (student.roll_no !== rollNo) {
-        //   navigate(`/student/${student.roll_no}`);
-        //   return;
-        // }
+        if (student.roll_no !== rollNo) {
+          navigate(`/student/${student.roll_no}`);
+          return;
+        }
         
         try {
           const data = await getStudentData(rollNo?.toString() || "757");
