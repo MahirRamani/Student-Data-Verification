@@ -5,13 +5,16 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration |
 const firebaseConfig = {
-  apiKey: process.env.apiKey,
-  authDomain: process.env.authDomain,
-  projectId: process.env.projectId,
-  storageBucket: process.env.storageBucket,
-  messagingSenderId: process.env.messagingSenderId,
-  appId: process.env.appId,
+  apiKey: import.meta.env.apiKey,
+  authDomain: import.meta.env.authDomain,
+  projectId: import.meta.env.projectId,
+  storageBucket: import.meta.env.storageBucket,
+  messagingSenderId: import.meta.env.messagingSenderId,
+  appId: import.meta.env.appId,
 };
+
+console.log("Firebase config:", firebaseConfig);
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
