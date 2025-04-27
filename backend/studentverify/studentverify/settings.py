@@ -32,7 +32,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    # 'student-data-verification.onrender.com',
+    'student-data-verification.onrender.com',
+    'https://student-data-verification.vercel.app/',
     'https://student-data-verification-git-main-mahirs-projects-62b79ffa.vercel.app/'
 ]
 
