@@ -46,6 +46,9 @@ ALLOWED_HOSTS = [
 
 CORS_ALLOW_ALL_ORIGINS = True  # For development only
 
+CORS_ALLOWED_ORIGINS = [
+    "https://student-data-verification.vercel.app",
+]
 
 APPEND_SLASH=False
 
@@ -76,6 +79,7 @@ CORS_ALLOW_HEADERS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
