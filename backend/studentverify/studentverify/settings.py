@@ -29,10 +29,11 @@ SECRET_KEY = 'django-insecure-d)wqtc0wsaxe&jx%$nkr^h1f2lm4*v+*#k4j&ioq0bb4s&cu4f
 DEBUG = True
 
 # Correct format - just the hostname without protocol or port for frontend:
-# ALLOWED_HOSTS = [
-#     'localhost',
-#     '127.0.0.1',
-# ]
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'student-data-verification.onrender.com'
+]
 
 # Keep your CORS settings separate:
 # CORS_ALLOWED_ORIGINS = [
