@@ -15,7 +15,10 @@ const api = axios.create({
 });
 
 export const loginStudent = async (roll_no: string, password: string) => {
+  console.log("Roll no:", roll_no, "Password:",password)
   const response = await api.post('/login/', { roll_no, password });
+  console.log("backend response:", response);
+  
   return response.data;
 };
 

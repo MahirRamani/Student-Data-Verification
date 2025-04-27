@@ -54,57 +54,6 @@ const LoginForm = () => {
   };
 
   return (
-    // <div className="flex justify-center items-center min-h-screen bg-gray-50">
-    //   <Card className="w-full max-w-md shadow-lg">
-    //     <CardHeader className="bg-blue-500 text-white rounded-t-lg">
-    //       <CardTitle className="text-2xl text-center">Student Login</CardTitle>
-    //     </CardHeader>
-    //     <CardContent className="p-6 space-y-4">
-    //       {error && (
-    //         <Alert variant="destructive">
-    //           <AlertCircle className="h-4 w-4" />
-    //           <AlertDescription>{error}</AlertDescription>
-    //         </Alert>
-    //       )}
-
-    //       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-    //         <div className="space-y-2">
-    //           <Label htmlFor="roll_no">Roll Number</Label>
-    //           <Input
-    //             id="roll_no"
-    //             type="text"
-    //             {...register('roll_no')}
-    //             placeholder="Enter your roll number"
-    //           />
-    //           {errors.roll_no && (
-    //             <p className="text-sm text-red-500">{errors.roll_no.message}</p>
-    //           )}
-    //         </div>
-
-    //         <div className="space-y-2">
-    //           <Label htmlFor="password">Password</Label>
-    //           <Input
-    //             id="password"
-    //             type="password"
-    //             {...register('password')}
-    //             placeholder="Enter your password"
-    //           />
-    //           {errors.password && (
-    //             <p className="text-sm text-red-500">{errors.password.message}</p>
-    //           )}
-    //         </div>
-
-    //         <Button
-    //           type="submit"
-    //           className="w-full"
-    //           disabled={loading}
-    //         >
-    //           {loading ? 'Logging in...' : 'Login'}
-    //         </Button>
-    //       </form>
-    //     </CardContent>
-    //   </Card>
-    // </div>
 
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-blue-50 to-white px-4 py-8">
       <Card className="w-full max-w-md shadow-xl border border-gray-200 overflow-hidden">

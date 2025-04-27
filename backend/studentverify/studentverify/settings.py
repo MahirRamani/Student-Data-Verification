@@ -29,26 +29,23 @@ SECRET_KEY = 'django-insecure-d)wqtc0wsaxe&jx%$nkr^h1f2lm4*v+*#k4j&ioq0bb4s&cu4f
 DEBUG = True
 
 # Correct format - just the hostname without protocol or port for frontend:
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'student-data-verification.onrender.com',
-    'https://student-data-verification.vercel.app/',
-    'https://student-data-verification.vercel.app',
-    'https://student-data-verification-git-main-mahirs-projects-62b79ffa.vercel.app/'
-]
+# ALLOWED_HOSTS = [
+#     'localhost',
+#     '127.0.0.1',
+#     'student-data-verification.onrender.com',
+#     'https://student-data-verification.vercel.app/'
+#     'https://student-data-verification-git-main-mahirs-projects-62b79ffa.vercel.app/'
+# ]
 
 # Keep your CORS settings separate:
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173",
-#     "http://127.0.0.1:5173",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://student-data-verification.vercel.app",
+]
 
 CORS_ALLOW_ALL_ORIGINS = True  # For development only
 
-CORS_ALLOWED_ORIGINS = [
-    "https://student-data-verification.vercel.app",
-]
 
 APPEND_SLASH=False
 
@@ -79,13 +76,13 @@ CORS_ALLOW_HEADERS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'student',
 ]
 
@@ -129,13 +126,13 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'Mahir@PSQL',
-        'HOST': '',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
 
-database_url = os.environ.get('DATABASE_URL')
-DATABASES["default"] = dj_database_url.parse(database_url)
+# database_url = os.environ.get('DATABASE_URL')
+# DATABASES["default"] = dj_database_url.parse(database_url)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
