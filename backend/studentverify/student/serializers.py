@@ -4,10 +4,10 @@ from .models import Student, UpdateHistory
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['id', 'roll_no', 'name', 'email', 'mobile_number', 
-                 'father_mobile_number', 'date_of_birth', 'address', 
-                 'field_of_study', 'branch', 'is_data_verified', 
-                 'is_mobile_verified']
+        fields = ['id', 'roll_no', 'name', 'date_of_birth', 'mobile_number', 'email', 
+                 'father_mobile_number', 'field_of_study', 
+                 'address', 'taluka', 'city', 'district', 'pincode',
+                 'is_data_verified', 'is_mobile_verified']
         read_only_fields = ['id']
 
 

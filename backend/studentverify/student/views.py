@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 import random
 import string
-from .models import Student, UpdateHistory, OTPVerification
+from .models import Student, UpdateHistory
 from .serializers import StudentSerializer, UpdateHistorySerializer
 
 @api_view(['POST'])

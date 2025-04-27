@@ -1,0 +1,61 @@
+// src/components/ThankYouPage.tsx
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useStudentStore } from "../store/studentStore";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { LogOut, CheckCircle2 } from "lucide-react";
+
+const ThankYouPage = () => {
+  const navigate = useNavigate();
+  const student = useStudentStore();
+
+  // Auto logout after 10 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleLogout();
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleLogout = () => {
+    student.logout();
+    navigate("/login");
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-8">
+      <Card className="w-full max-w-md shadow-xl border border-gray-200 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-green-600 to-green-500 text-white p-6 text-center">
+          <div className="mx-auto bg-white rounded-full p-3 w-16 h-16 flex items-center justify-center mb-4">
+            <CheckCircle2 className="h-10 w-10 text-green-500" />
+          </div>
+          <CardTitle className="text-2xl font-bold">Thank You!</CardTitle>
+        </CardHeader>
+
+        <CardContent className="p-6 text-center space-y-6">
+          <div className="space-y-3">
+            <p className="text-lg font-medium text-gray-800">
+              Your information has been confirmed.
+            </p>
+            <p className="text-gray-600">
+              Thank you for verifying your details. Your session will
+              automatically end in a few seconds.
+            </p>
+          </div>
+
+          <Button
+            onClick={handleLogout}
+            className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout Now
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default ThankYouPage;

@@ -2,23 +2,27 @@ from django.db import models
 from django.contrib.auth.hashers import make_password
 
 class Student(models.Model):
-    roll_no = models.CharField(max_length=20, unique=True)
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)  # Stored as plain text in the provided code, but should be hashed
-    mobile_number = models.CharField(max_length=15)
-    father_mobile_number = models.CharField(max_length=15)
+    roll_no = models.CharField(max_length=3, unique=True)
+    password = models.CharField(max_length=6)
+    name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
+    mobile_number = models.CharField(max_length=15)
+    email = models.EmailField(null=True, unique=True)
+    father_mobile_number = models.CharField(max_length=15)
+    field_of_study = models.CharField(max_length=100)  # Keep this field
+    # branch field is removed
     address = models.TextField()
-    field_of_study = models.CharField(max_length=100)
-    branch = models.CharField(max_length=100)
+    taluka = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)  # New city field
+    district = models.CharField(max_length=100, blank=True, null=True)
+    pincode = models.CharField(max_length=6, blank=True, null=True)
     is_data_verified = models.BooleanField(default=False)
     is_mobile_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def set_password(self, raw_password):
-        self.password = make_password(raw_password)
+        self.password = raw_password
         self.save(update_fields=['password'])
     
     def __str__(self):
@@ -39,16 +43,16 @@ class UpdateHistory(models.Model):
         return f"{self.student.roll_no} - {self.field_name} update on {self.update_date}"
 
 
-class OTPVerification(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='otp_verifications')
-    otp = models.CharField(max_length=6)
-    mobile_number = models.CharField(max_length=15)
-    is_used = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    expires_at = models.DateTimeField()
+# class OTPVerification(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='otp_verifications')
+#     otp = models.CharField(max_length=6)
+#     mobile_number = models.CharField(max_length=15)
+#     is_used = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     expires_at = models.DateTimeField()
     
-    def __str__(self):
-        return f"OTP for {self.student.roll_no}"
+#     def __str__(self):
+#         return f"OTP for {self.student.roll_no}"
         
         
 # # student/models.py - Django Student Model

@@ -36,28 +36,28 @@ export const studentSchema = z.object({
       message: "Name must contain at least three words",
     })
     .transform(toProperCase),
+  date_of_birth: z.string()
+    .refine((value) => !isNaN(Date.parse(value)), {
+      message: "Invalid date format",
+    }),
   email: z.string().email("Invalid email address"),
   mobile_number: z.string()
     .regex(/^\+?[0-9]{10,15}$/, "Mobile number must be between 10-15 digits"),
   father_mobile_number: z.string()
     .regex(/^\+?[0-9]{10,15}$/, "Father's mobile number must be between 10-15 digits"),
-  date_of_birth: z.string()
-    .refine((value) => !isNaN(Date.parse(value)), {
-      message: "Invalid date format",
-    }),
+  field_of_study: z.string().min(1, "Field of study is required"),
   address: z.string()
     .min(5, "Address must be at least 5 characters")
     .transform(formatAddress),
-  field_of_study: z.string().min(1, "Field of study is required"),
-  branch: z.string().min(1, "Branch is required"),
+  // branch is removed
+  taluka: z.string().min(1, "Taluka is required"),
+  city: z.string().min(1, 'City is required'),  // New city field
+  district: z.string().min(1, "District is required"),
+  pincode: z.string()
+    .regex(/^\d{6}$/, "Pincode must be a 6-digit number"),
 });
 
 // Update details form schema
-// export const updateDetailsSchema = studentSchema.partial();
-// Update the validation schema for name
-// In src/validation/schemas.ts
-// import { z } from 'zod';
-
 export const updateDetailsSchema = z.object({
   roll_no: z.string().min(1, 'Roll number is required'),
   name: z.string()
@@ -67,18 +67,22 @@ export const updateDetailsSchema = z.object({
       const wordCount = name.trim().split(/\s+/).length;
       return wordCount <= 3;
     }, { message: "Name should not contain more than 3 words" }),
-  email: z.string().email('Please enter a valid email address'),
-  mobile_number: z.string()
-    .regex(/^\+?[0-9]{10,15}$/, "Mobile number must be between 10-15 digits with proper country code"),
-  father_mobile_number: z.string()
-    .regex(/^\+?[0-9]{10,15}$/, "Father's mobile number must be between 10-15 digits with proper country code"),
   date_of_birth: z.string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date of birth must be in YYYY-MM-DD format'),
-  address: z.string().min(1, 'Address is required'),
+  mobile_number: z.string()
+    .regex(/^\+?[0-9]{10,15}$/, "Mobile number must be between 10-15 digits with proper country code"),
+  email: z.string().email('Please enter a valid email address'),
+  father_mobile_number: z.string()
+    .regex(/^\+?[0-9]{10,15}$/, "Father's mobile number must be between 10-15 digits with proper country code"),
   field_of_study: z.string().min(1, 'Field of study is required'),
-  branch: z.string().min(1, 'Branch is required'),
-  // is_mobile_verified: z.boolean(),
-  // is_data_verified: z.boolean(),
+  address: z.string().min(1, 'Address is required'),
+  // branch is removed
+  // src/validation/schemas.ts (continued)
+  taluka: z.string().min(1, 'Taluka is required'),
+  city: z.string().min(1, "City is required"),  // New city field
+  district: z.string().min(1, 'District is required'),
+  pincode: z.string()
+    .regex(/^\d{6}$/, "Pincode must be a 6-digit number"),
 });
 
 export type UpdateDetailsInput = z.infer<typeof updateDetailsSchema>;
@@ -92,34 +96,6 @@ export const otpVerificationSchema = z.object({
     .regex(/^\d+$/, 'OTP must contain only numbers'),
 });
 
-
-// OTP verification schema
-// export const otpVerificationSchema = z.object({
-//   otp: z.string().length(6, "OTP must be 6 digits"),
-//   mobile_number: z.string().regex(/^\+?[0-9]{10,15}$/, "Invalid mobile number format"),
-// });
-
 export type LoginInput = z.infer<typeof loginSchema>;
-export type StudentData = z.infer<typeof studentSchema>;
-// export type UpdateDetailsInput = z.infer<typeof updateDetailsSchema>;
+export type StudentInput = z.infer<typeof studentSchema>;
 export type OtpVerificationInput = z.infer<typeof otpVerificationSchema>;
-
-
-// NOTE
-// // Validation schema for comprehensive checks
-// const validationSchema = z.object({
-//   name: z.string().min(3, 'Name must be at least 3 characters long')
-//     .refine(name => name.trim().split(/\s+/).length >= 2, 'Name should contain at least two words'),
-//   email: z.string().email('Email must be a valid email address'),
-//   mobile_number: z.string()
-//     .refine(val => /^\+[1-9]\d{1,14}$/.test(val), 'Mobile number must include country code (e.g., +91...)'),
-//   father_mobile_number: z.string()
-//     .refine(val => /^\+[1-9]\d{1,14}$/.test(val), 'Father\'s mobile number must include country code (e.g., +91...)'),
-//   date_of_birth: z.string().min(1, 'Date of birth is required'),
-//   address: z.string().min(10, 'Address should be detailed and complete'),
-//   field_of_study: z.string().min(1, 'Field of study is required'),
-//   branch: z.string().min(1, 'Branch is required'),
-// });
-
-
-// export type ValidationInput = z.infer<typeof validationSchema>;

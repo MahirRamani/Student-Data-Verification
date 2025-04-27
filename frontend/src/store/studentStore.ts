@@ -1,3 +1,4 @@
+// src/store/studentStore.ts
 import { create } from 'zustand';
 import { Student } from '../types/students';
 
@@ -15,49 +16,22 @@ export const useStudentStore = create<StudentStore>((set) => {
     id: '',
     roll_no: '',
     name: '',
-    email: '',
-    mobile_number: '',
-    father_mobile_number: '',
     date_of_birth: '',
+    mobile_number: '',
+    email: '',
+    father_mobile_number: '',
+    field_of_study: '',  // Keep this field
+    // branch field is removed
     address: '',
-    field_of_study: '',
-    branch: '',
+    taluka: '',
+    city: '',  // New city field
+    district: '',
+    pincode: '',
     is_data_verified: false,
     is_mobile_verified: false,
     isAuthenticated: false,
     lastActivity: Date.now()
   };
-  
-  // const storedSession = localStorage.getItem('studentSession');
-  // // If there's a stored session, use it as initial state
-  // if (storedSession) {
-  //   try {
-  //     const parsedSession = JSON.parse(storedSession);
-  //     const lastActivity = localStorage.getItem('lastActivity');
-      
-  //     if (lastActivity) {
-  //       const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60;
-  //       console.log("Inactive time:", inactiveTime);
-        
-  //       if (inactiveTime < 1) { // 30 minutes timeout
-  //         initialState = {
-  //           ...initialState,
-  //           ...parsedSession,
-  //           isAuthenticated: true,
-  //           lastActivity: parseInt(lastActivity)
-  //         };
-  //       } else {
-  //         // Session timed out, remove it
-  //         localStorage.removeItem('studentSession');
-  //         localStorage.removeItem('lastActivity');
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to parse stored session:', error);
-  //     localStorage.removeItem('studentSession');
-  //     localStorage.removeItem('lastActivity');
-  //   }
-  // }
 
   return {
     ...initialState,
@@ -76,13 +50,17 @@ export const useStudentStore = create<StudentStore>((set) => {
           id: newState.id,
           roll_no: newState.roll_no,
           name: newState.name,
-          email: newState.email,
-          mobile_number: newState.mobile_number,
-          father_mobile_number: newState.father_mobile_number,
           date_of_birth: newState.date_of_birth,
+          mobile_number: newState.mobile_number,
+          email: newState.email,
+          father_mobile_number: newState.father_mobile_number,
+          field_of_study: newState.field_of_study,  // Keep this field
           address: newState.address,
-          field_of_study: newState.field_of_study,
-          branch: newState.branch,
+          // branch field is removed
+          taluka: newState.taluka,
+          city: newState.city,  // New city field
+          district: newState.district,
+          pincode: newState.pincode,
           is_data_verified: newState.is_data_verified,
           is_mobile_verified: newState.is_mobile_verified
         };
@@ -109,13 +87,17 @@ export const useStudentStore = create<StudentStore>((set) => {
         id: '',
         roll_no: '',
         name: '',
-        email: '',
-        mobile_number: '',
-        father_mobile_number: '',
         date_of_birth: '',
+        mobile_number: '',
+        email: '',
+        father_mobile_number: '',
+        field_of_study: '',  // Keep this field
+        // branch field is removed
         address: '',
-        field_of_study: '',
-        branch: '',
+        taluka: '',
+        city: '',  // New city field
+        district: '',
+        pincode: '',
         is_data_verified: false,
         is_mobile_verified: false,
         isAuthenticated: false,
@@ -124,61 +106,3 @@ export const useStudentStore = create<StudentStore>((set) => {
     }
   };
 });
-
-// // src/store/studentStore.ts
-// import { create } from 'zustand';
-// import { Student } from '../types/students';
-
-// interface StudentStore extends Student {
-//   isAuthenticated: boolean;
-//   lastActivity: number;
-//   setStudentData: (data: Partial<Student>) => void;
-//   updateLastActivity: () => void;
-//   logout: () => void;
-// }
-
-// export const useStudentStore = create<StudentStore>((set) => ({
-//   id: '',
-//   roll_no: '',
-//   name: '',
-//   email: '',
-//   mobile_number: '',
-//   father_mobile_number: '',
-//   date_of_birth: '',
-//   address: '',
-//   field_of_study: '',
-//   branch: '',
-//   is_data_verified: false,
-//   is_mobile_verified: false,
-//   isAuthenticated: false,
-//   lastActivity: Date.now(),
-  
-//   setStudentData: (data) => set((state) => ({ 
-//     ...state, 
-//     ...data, 
-//     isAuthenticated: true,
-//     lastActivity: Date.now() 
-//   })),
-  
-//   updateLastActivity: () => set((state) => ({ 
-//     ...state, 
-//     lastActivity: Date.now() 
-//   })),
-  
-//   logout: () => set({
-//     id: '',
-//     roll_no: '',
-//     name: '',
-//     email: '',
-//     mobile_number: '',
-//     father_mobile_number: '',
-//     date_of_birth: '',
-//     address: '',
-//     field_of_study: '',
-//     branch: '',
-//     is_data_verified: false,
-//     is_mobile_verified: false,
-//     isAuthenticated: false,
-//     lastActivity: 0
-//   })
-// }));

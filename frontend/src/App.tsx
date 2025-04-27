@@ -1,12 +1,68 @@
-// src/App.tsx (Fixed Session Timeout)
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginForm from './components/LoginForm';
-import StudentDashboard from './components/StudentDashboard';
-import { useEffect } from 'react';
-import { useStudentStore } from './store/studentStore';
+// src/App.tsx
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
+import LoginForm from "./components/LoginForm";
+import StudentDashboard from "./components/StudentDashboard";
+import ThankYouPage from "./components/ThankYouPage";
+import { useEffect, useState } from "react";
+import { useStudentStore } from "./store/studentStore";
+
+// Route wrapper that handles redirect on refresh properly
+const RouteHandler: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { isAuthenticated, setStudentData } = useStudentStore();
+  const [isLoading, setIsLoading] = useState(true);
+  // const location = useLocation();
+
+  useEffect(() => {
+    // Try to recover session from localStorage on component mount
+    const storedSession = localStorage.getItem("studentSession");
+    const SESSION_TIMEOUT_MINUTES = 5;
+
+    if (storedSession && !isAuthenticated) {
+      try {
+        const session = JSON.parse(storedSession);
+        const lastActivity = localStorage.getItem("lastActivity");
+
+        if (lastActivity) {
+          const inactiveTime =
+            (Date.now() - parseInt(lastActivity)) / (1000 * 60);
+          if (inactiveTime < SESSION_TIMEOUT_MINUTES) {
+            // Session still valid
+            setStudentData(session);
+            localStorage.setItem("lastActivity", Date.now().toString());
+          } else {
+            localStorage.removeItem("studentSession");
+            localStorage.removeItem("lastActivity");
+          }
+        }
+      } catch (error) {
+        console.error("Failed to parse stored session:", error);
+        localStorage.removeItem("studentSession");
+        localStorage.removeItem("lastActivity");
+      }
+    }
+
+    setIsLoading(false);
+  }, [isAuthenticated, setStudentData]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return <>{children}</>;
+};
 
 // Private route component
-const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { isAuthenticated } = useStudentStore();
 
   if (!isAuthenticated) {
@@ -16,263 +72,145 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   return <>{children}</>;
 };
 
-const App = () => {
-  const { isAuthenticated, setStudentData, logout } = useStudentStore();
-  const SESSION_TIMEOUT_MINUTES = 1;
+// ThankYou page with auto-logout
+const ThankYouWithAutoLogout: React.FC = () => {
+  const navigate = useNavigate();
+  const { logout } = useStudentStore();
 
-  // Check for session timeout on initial load and set up interval for checking
+  useEffect(() => {
+    // Auto-logout after 2 seconds
+    const timer = setTimeout(() => {
+      logout();
+      localStorage.removeItem("studentSession");
+      localStorage.removeItem("lastActivity");
+      navigate("/login");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [logout, navigate]);
+
+  return <ThankYouPage />;
+};
+
+const App = () => {
+  const { isAuthenticated, logout } = useStudentStore();
+  const SESSION_TIMEOUT_MINUTES = 5;
+
+  // Check for session timeout and set up activity tracking
   useEffect(() => {
     // Function to check session validity
     const checkSessionValidity = () => {
       if (isAuthenticated) {
-        const lastActivity = localStorage.getItem('lastActivity');
+        const lastActivity = localStorage.getItem("lastActivity");
         if (lastActivity) {
-          const inactiveTime = (Date.now() - parseInt(lastActivity)) / (1000 * 60); // in minutes
+          const inactiveTime =
+            (Date.now() - parseInt(lastActivity)) / (1000 * 60); // in minutes
           if (inactiveTime >= SESSION_TIMEOUT_MINUTES) {
-            console.log('Session timed out after inactivity');
+            console.log("Session timed out after inactivity");
             logout();
-            localStorage.removeItem('studentSession');
-            localStorage.removeItem('lastActivity');
+            localStorage.removeItem("studentSession");
+            localStorage.removeItem("lastActivity");
           }
         }
       }
     };
-    
-    // Initial check
-    checkSessionValidity();
-    
+
     // Set interval for periodic checks
     const intervalId = setInterval(checkSessionValidity, 60000); // Check every minute
-    
+
     // Set up event listeners to track user activity
     const updateActivity = () => {
       if (isAuthenticated) {
-        localStorage.setItem('lastActivity', Date.now().toString());
+        localStorage.setItem("lastActivity", Date.now().toString());
       }
     };
-    
-    window.addEventListener('mousemove', updateActivity);
-    window.addEventListener('keypress', updateActivity);
-    window.addEventListener('click', updateActivity);
-    window.addEventListener('scroll', updateActivity);
-    
-    // Try to recover session from localStorage if exists
-    const storedSession = localStorage.getItem('studentSession');
-    if (storedSession && !isAuthenticated) {
-      try {
-        const session = JSON.parse(storedSession);
-        const lastActivity = localStorage.getItem('lastActivity');
-        
-        if (lastActivity) {
-          const inactiveTime = (Date.now() - parseInt(lastActivity)) / (1000 * 60);
-          if (inactiveTime < SESSION_TIMEOUT_MINUTES) { // Session still valid
-            setStudentData(session);
-            updateActivity(); // Reset the timer
-          } else {
-            logout();
-            localStorage.removeItem('studentSession');
-            localStorage.removeItem('lastActivity');
-          }
-        }
-      } catch (error) {
-        console.error('Failed to parse stored session:', error);
-        localStorage.removeItem('studentSession');
-        localStorage.removeItem('lastActivity');
-      }
-    }
-    
+
+    window.addEventListener("mousemove", updateActivity);
+    window.addEventListener("keypress", updateActivity);
+    window.addEventListener("click", updateActivity);
+    window.addEventListener("scroll", updateActivity);
+
     // Cleanup
     return () => {
       clearInterval(intervalId);
-      window.removeEventListener('mousemove', updateActivity);
-      window.removeEventListener('keypress', updateActivity);
-      window.removeEventListener('click', updateActivity);
-      window.removeEventListener('scroll', updateActivity);
+      window.removeEventListener("mousemove", updateActivity);
+      window.removeEventListener("keypress", updateActivity);
+      window.removeEventListener("click", updateActivity);
+      window.removeEventListener("scroll", updateActivity);
     };
-  }, [isAuthenticated, logout, setStudentData]);
-  
+  }, [isAuthenticated, logout]);
 
   // Store session data when authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      const { 
-        id, roll_no, name, email, mobile_number, father_mobile_number, 
-        date_of_birth, address, field_of_study, branch, 
-        is_data_verified, is_mobile_verified 
+      const {
+        id,
+        roll_no,
+        name,
+        date_of_birth,
+        mobile_number,
+        email,
+        father_mobile_number,
+        field_of_study,
+        address,
+        taluka,
+        city,
+        district,
+        pincode,
+        is_data_verified,
+        is_mobile_verified,
       } = useStudentStore.getState();
 
       const sessionData = {
-        id, roll_no, name, email, mobile_number, father_mobile_number,
-        date_of_birth, address, field_of_study, branch,
-        is_data_verified, is_mobile_verified
+        id,
+        roll_no,
+        name,
+        date_of_birth,
+        mobile_number,
+        email,
+        father_mobile_number,
+        field_of_study,
+        address,
+        taluka,
+        city,
+        district,
+        pincode,
+        is_data_verified,
+        is_mobile_verified,
       };
 
-      localStorage.setItem('studentSession', JSON.stringify(sessionData));
-      localStorage.setItem('lastActivity', Date.now().toString());
+      localStorage.setItem("studentSession", JSON.stringify(sessionData));
+      localStorage.setItem("lastActivity", Date.now().toString());
     }
   }, [isAuthenticated]);
 
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<LoginForm />} />
-        <Route 
-          path="/student/:rollNo/" 
-          element={
-            <PrivateRoute>
-              <StudentDashboard />
-            </PrivateRoute>
-          } 
-        />
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
+      <RouteHandler>
+        <Routes>
+          <Route path="/login" element={<LoginForm />} />
+          <Route
+            path="/student/:rollNo/"
+            element={
+              <PrivateRoute>
+                <StudentDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/thank-you"
+            element={
+              <PrivateRoute>
+                <ThankYouWithAutoLogout />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </RouteHandler>
     </Router>
   );
 };
 
 export default App;
-
-
-// // src/App.tsx
-// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// import LoginForm from './components/LoginForm';
-// import StudentDashboard from './components/StudentDashboard';
-// import { useEffect } from 'react';
-// import { useStudentStore } from './store/studentStore';
-
-// // Private route component
-// const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-//   const { isAuthenticated } = useStudentStore();
-
-//   if (!isAuthenticated) {
-//     return <Navigate to="/login" />;
-//   }
-
-//   return <>{children}</>;
-// };
-
-// const App = () => {
-//   const { isAuthenticated, setStudentData, logout } = useStudentStore();
-
-//   // Check for session timeout on initial load
-//   useEffect(() => {
-//     if (isAuthenticated) {
-//       const lastActivity = localStorage.getItem('lastActivity');
-//       if (lastActivity) {
-//         const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60; // in minutes
-//         if (inactiveTime >= 10) { // 10 minutes timeout
-//           logout();
-//         }
-//       }
-//     }
-
-//     // Try to recover session from localStorage if exists
-//     const storedSession = localStorage.getItem('studentSession');
-//     if (storedSession && !isAuthenticated) {
-//       try {
-//         const session = JSON.parse(storedSession);
-//         console.log("Session:", session);
-        
-//         const lastActivity = localStorage.getItem('firstActivity');
-//         console.log("Session:", lastActivity);
-        
-
-//         if (lastActivity) {
-//           // const inactiveTime = (Date.now() - parseInt(lastActivity)) / 1000 / 60;
-//           if (parseInt(lastActivity) < 1) { // Session still valid
-//             setStudentData(session);
-//           } else {
-//             logout();
-//             localStorage.removeItem('studentSession');
-//             localStorage.removeItem('lastActivity');
-//           }
-//         }
-//       } catch (error) {
-//         console.error('Failed to parse stored session:', error);
-//         localStorage.removeItem('studentSession');
-//         localStorage.removeItem('lastActivity');
-//       }
-//     }
-//   }, [isAuthenticated, logout, setStudentData]);
-
-//   // Store session data when authenticated
-//   useEffect(() => {
-//     if (isAuthenticated) {
-//       const { 
-//         id, roll_no, name, email, mobile_number, father_mobile_number, 
-//         date_of_birth, address, field_of_study, branch, 
-//         is_data_verified, is_mobile_verified 
-//       } = useStudentStore.getState();
-
-//       const sessionData = {
-//         id, roll_no, name, email, mobile_number, father_mobile_number,
-//         date_of_birth, address, field_of_study, branch,
-//         is_data_verified, is_mobile_verified
-//       };
-
-//       localStorage.setItem('studentSession', JSON.stringify(sessionData));
-//       localStorage.setItem('lastActivity', Date.now().toString());
-//     }
-//   }, [isAuthenticated]);
-
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/login" element={<LoginForm />} />
-//         <Route 
-//           path="/student/:rollNo" 
-//           element={
-//             <PrivateRoute>
-//               <StudentDashboard />
-//             </PrivateRoute>
-//           } 
-//         />
-//         <Route path="/" element={<Navigate to="/login" />} />
-//         <Route path="*" element={<Navigate to="/login" />} />
-//       </Routes>
-//     </Router>
-//   );
-// };
-
-// export default App;
-
-// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// import LoginForm from './components/LoginForm';
-// import StudentDashboard from './components/StudentDashboard';
-// import { useStudentStore } from './store/studentStore';
-
-// // Private route component
-// const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-//   const { isAuthenticated } = useStudentStore();
-//   const storedSession = localStorage.getItem('studentSession');
-
-//   // Consider also stored sessions
-//   if (!isAuthenticated && !storedSession) {
-//     return <Navigate to="/login" />;
-//   }
-
-//   return <>{children}</>;
-// };
-
-// const App = () => {
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/login" element={<LoginForm />} />
-//         <Route
-//           path="/student/:rollNo/dashboard"
-//           element={
-//             <PrivateRoute>
-//               <StudentDashboard />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route path="/" element={<Navigate to="/login" />} />
-//         <Route path="*" element={<Navigate to="/login" />} />
-//       </Routes>
-//     </Router>
-//   );
-// };
-
-// export default App;
