@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useStudentStore } from "../store/studentStore";
 import { auth } from "../services/firebase";
+import { useNavigate } from "react-router-dom";
 import {
   ConfirmationResult,
   RecaptchaVerifier,
@@ -35,6 +36,7 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
   onVerificationComplete,
 }) => {
   const student = useStudentStore();
+  const navigate = useNavigate();
 
   const [otp, setOTP] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -163,8 +165,10 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
       });
 
       updateStudentData(student.roll_no, student);
+      onVerificationComplete();
+      // Then redirect to ThankYou page after a short delay
       setTimeout(() => {
-        onVerificationComplete();
+        navigate('/thankyou');
       }, 1500);
     } catch (err: any) {
       console.error("Error verifying OTP:", err);
