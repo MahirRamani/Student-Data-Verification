@@ -11,6 +11,7 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import { CheckCircle2, XCircle, UserCircle } from "lucide-react";
+import OtpVerification from "./OtpVerification";
 
 interface DataConfirmationProps {
   onUpdateNeeded: () => void;
@@ -22,10 +23,21 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
   const navigate = useNavigate();
   const student = useStudentStore();
   const [loading, setLoading] = useState(false);
+  const [showOtpVerification, setShowOtpVerification] = useState(true);
 
   const handleNoChanges = () => {
     setLoading(true);
     // Navigate to thank you page
+    {
+      showOtpVerification && (
+        <OtpVerification
+          onVerificationComplete={() => {
+            // This callback won't be used anymore as we directly navigate in OtpVerification component
+            setShowOtpVerification(false);
+          }}
+        />
+      )
+    }
     navigate("/thank-you");
   };
 
@@ -156,7 +168,7 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
                 </div>
               </div>
             </div>
-            
+
             <div className="space-y-3 md:col-span-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="bg-gray-50 p-3 rounded border">
