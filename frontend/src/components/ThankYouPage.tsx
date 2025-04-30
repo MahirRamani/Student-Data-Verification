@@ -3,8 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStudentStore } from "../store/studentStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Button } from "./ui/button";
-import { LogOut, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 const ThankYouPage = () => {
   const navigate = useNavigate();
@@ -44,14 +43,6 @@ const ThankYouPage = () => {
               automatically end in a few seconds.
             </p>
           </div>
-
-          <Button
-            onClick={handleLogout}
-            className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout Now
-          </Button>
         </CardContent>
       </Card>
     </div>
