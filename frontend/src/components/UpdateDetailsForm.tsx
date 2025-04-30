@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useStudentStore } from "../store/studentStore";
 import { updateStudentData } from "../services/api";
 import { Card, CardContent } from "./ui/card";
@@ -234,60 +234,96 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
   };
 
   // Create a reusable dropdown component with search functionality
-  const SearchableDropdown = ({ 
-    name, 
-    label, 
-    options, 
-    filter, 
-    setFilter,
-    placeholder 
-  }: { 
-    name: keyof UpdateDetailsInput, 
-    label: string, 
-    options: string[], 
-    filter: string, 
-    setFilter: (value: string) => void,
-    placeholder: string 
-  }) => (
+ // Create a reusable dropdown component with search functionality
+const SearchableDropdown = ({ 
+  name, 
+  label, 
+  options, 
+  filter, 
+  setFilter,
+  placeholder 
+}: { 
+  name: keyof UpdateDetailsInput, 
+  label: string, 
+  options: string[], 
+  filter: string, 
+  setFilter: (value: string) => void,
+  placeholder: string 
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
     <div className="space-y-2">
       <Label htmlFor={name.toString()} className="text-gray-700">
         {label}
       </Label>
-      <div className="relative">
+      <div className="relative" ref={dropdownRef}>
         <Controller
           name={name}
           control={control}
           render={({ field }) => (
-            <Select 
-              value={(field.value)?.toString()} 
-              onValueChange={field.onChange}
-            >
-              <SelectTrigger className="focus:border-blue-300 w-full">
-                <SelectValue placeholder={placeholder} />
-              </SelectTrigger>
-              <SelectContent>
-                <div className="flex items-center px-3 pb-2 sticky top-0 bg-white z-10 border-b">
-                  <Search className="h-4 w-4 mr-2 text-gray-500" />
-                  <Input
-                    placeholder="Search..."
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-8"
-                  />
-                </div>
-                <div className="max-h-60 overflow-y-auto">
+            <div>
+              <div className="flex items-center relative">
+                <Input
+                  placeholder={placeholder}
+                  value={filter}
+                  onChange={(e) => {
+                    setFilter(e.target.value);
+                    if (!isOpen) setIsOpen(true);
+                  }}
+                  onFocus={() => setIsOpen(true)}
+                  className="focus:border-blue-300 w-full pr-8"
+                />
+                <Search className="h-4 w-4 text-gray-500 absolute right-3" />
+              </div>
+              
+              {isOpen && (
+                <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg max-h-60 overflow-y-auto">
                   {options.length > 0 ? (
                     options.map((option) => (
-                      <SelectItem key={option} value={option}>
+                      <div
+                        key={option}
+                        className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
+                          field.value === option ? "bg-blue-100" : ""
+                        }`}
+                        onClick={() => {
+                          field.onChange(option);
+                          setFilter(option);
+                          setIsOpen(false);
+                        }}
+                      >
                         {option}
-                      </SelectItem>
+                      </div>
                     ))
                   ) : (
-                    <div className="px-2 py-2 text-sm text-gray-500">No results found</div>
+                    <div className="px-3 py-2 text-sm text-gray-500">No results found</div>
                   )}
                 </div>
-              </SelectContent>
-            </Select>
+              )}
+              <input
+                type="hidden"
+                name={field.name}
+                ref={field.ref}
+                onBlur={field.onBlur}
+                onChange={field.onChange}
+                value={String(field.value || '')}
+              />
+            </div>
           )}
         />
       </div>
@@ -298,6 +334,7 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
       )}
     </div>
   );
+};
 
   return (
     <Card className="shadow-md border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
