@@ -27,18 +27,17 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
 
   const handleNoChanges = () => {
     setLoading(true);
-    // Navigate to thank you page
-    {
-      showOtpVerification && (
-        <OtpVerification
-          onVerificationComplete={() => {
-            // This callback won't be used anymore as we directly navigate in OtpVerification component
-            setShowOtpVerification(false);
-          }}
-        />
-      )
+    if (showOtpVerification) {
+      // Show OTP verification and navigate to thank you page after verification is complete
+      <OtpVerification
+        onVerificationComplete={() => {
+          setShowOtpVerification(false);
+          navigate("/thank-you");
+        }}
+      />;
+    } else {
+      navigate("/thank-you");
     }
-    navigate("/thank-you");
   };
 
   const handleNeedChanges = () => {
