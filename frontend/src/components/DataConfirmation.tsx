@@ -156,14 +156,7 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
                 </div>
               </div>
             </div>
-
-            <div className="bg-gray-50 p-3 rounded border">
-              <h4 className="text-sm font-medium text-gray-500">Pincode</h4>
-              <p className="font-medium text-gray-800">
-                {student.pincode || "-"}
-              </p>
-            </div>
-
+            
             <div className="space-y-3 md:col-span-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="bg-gray-50 p-3 rounded border">

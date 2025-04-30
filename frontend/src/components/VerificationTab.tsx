@@ -124,8 +124,9 @@ const VerificationTab = () => {
   const redirectToUpdateTab = () => {
     // Use react-router's navigate to go to the current URL but with update tab active
     // You could also use a state management approach instead
-    const currentPath = window.location.pathname;
-    navigate(currentPath, { state: { activeTab: "update" } });
+    setLoading(true);
+    // Navigate to thank you page
+    navigate("/thank-you");
   };
 
   const handleVerify = async () => {
