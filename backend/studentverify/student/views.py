@@ -60,16 +60,18 @@ class StudentViewSet(viewsets.ModelViewSet):
                     old_value=str(original_data[field]),
                     new_value=str(new_data[field])
                 )
+        
+        instance.save()
     
-        if has_changes:
-            # Mark data as not verified when updated
-            instance.is_data_verified = False
+        # if has_changes:
+        #     # Mark data as not verified when updated
+        #     instance.is_data_verified = False
             
-            # If mobile number has changed, also mark mobile as not verified
-            if original_data['mobile_number'] != instance.mobile_number:
-                instance.is_mobile_verified = False
+        #     # If mobile number has changed, also mark mobile as not verified
+        #     if original_data['mobile_number'] != instance.mobile_number:
+        #         instance.is_mobile_verified = False
             
-            instance.save()
+        #     instance.save()
         
     @action(detail=True, methods=['post'])
     def verify(self, request, roll_no=None):

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStudentStore } from "../store/studentStore";
-import { verifyStudentData } from "../services/api";
+import { updateStudentData } from "../services/api";
 import {
   Card,
   CardContent,
@@ -125,7 +125,7 @@ const VerificationTab = () => {
     // Use react-router's navigate to go to the current URL but with update tab active
     setLoading(true);
     // Navigate to thank you page
-    navigate("/thank-you");
+    navigate(`/student/${student.roll_no}`);
   };
 
   const handleVerify = async () => {
@@ -144,25 +144,30 @@ const VerificationTab = () => {
 
     try {
       // First verify the data and set the is_data_verified flag to true
-      await verifyStudentData(student.roll_no);
+      // await verifyStudentData(student.roll_no);
       
       // Update student data in store with is_data_verified flag
       student.setStudentData({ 
         ...student, 
         is_data_verified: true 
       });
+
+      await updateStudentData(student.roll_no, {
+        ...student,
+        is_data_verified: true,
+      });
       
-      setSuccess("Your data has been successfully verified!");
+      setSuccess("Your data has been successfully updated!");
       
       // If mobile is not verified, show OTP verification next
-      if (!student.is_mobile_verified) {
-        setLoading(false);
-        setShowOtpVerification(true);
-        return;
-      }
+      // if (!student.is_mobile_verified) {
+      //   setLoading(false);
+      //   setShowOtpVerification(true);
+      //   return;
+      // }
       
       // If mobile is already verified, navigate to thank you page
-      navigate("/thank-you");
+      // navigate("/thank-you");
     } catch (err: any) {
       console.error("Failed to verify data:", err);
       setError("Verification failed. Please try again.");
