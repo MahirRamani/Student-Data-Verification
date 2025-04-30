@@ -402,12 +402,6 @@ const VerificationTab = () => {
                   {!loading && <CheckSquare className="h-4 w-4" />}
                 </Button>
 
-                {student.is_data_verified && (
-                  <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded-md border border-green-200">
-                    <CheckCircle2 className="h-5 w-5" />
-                    <span className="font-medium">Data Already Verified</span>
-                  </div>
-                )}
               </div>
             </div>
           </>
