@@ -47,11 +47,13 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
     <Card className="shadow-md border rounded-lg overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
         <CardTitle className="text-xl text-blue-700">
-          Confirm Your Information
+          {showOtpVerification
+            ? "OTP Verification"
+            : "Confirm Your Information"}
         </CardTitle>
         <CardDescription className="text-blue-600/70">
-          Please review your details and let us know if you need to make any
-          changes
+          {showOtpVerification &&
+            "Please review your details and let us know if you need to make any changes"}
         </CardDescription>
       </CardHeader>
 
@@ -84,7 +86,9 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
                   </div>
 
                   <div className="bg-gray-50 p-3 rounded border">
-                    <h4 className="text-sm font-medium text-gray-500">Full Name</h4>
+                    <h4 className="text-sm font-medium text-gray-500">
+                      Full Name
+                    </h4>
                     <p className="font-medium text-gray-800">
                       {student.name || "-"}
                     </p>
@@ -138,7 +142,9 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
                   </div>
 
                   <div className="bg-gray-50 p-3 rounded border">
-                    <h4 className="text-sm font-medium text-gray-500">Address</h4>
+                    <h4 className="text-sm font-medium text-gray-500">
+                      Address
+                    </h4>
                     <p className="font-medium text-gray-800">
                       {student.address || "-"}
                     </p>
@@ -160,7 +166,9 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
                   <div className="space-y-3 md:col-span-1">
                     <div className="grid grid-cols-1 gap-3">
                       <div className="bg-gray-50 p-3 rounded border">
-                        <h4 className="text-sm font-medium text-gray-500">City</h4>
+                        <h4 className="text-sm font-medium text-gray-500">
+                          City
+                        </h4>
                         <p className="font-medium text-gray-800">
                           {student.city || "-"}
                         </p>
@@ -168,7 +176,7 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="space-y-3 md:col-span-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="bg-gray-50 p-3 rounded border">
@@ -181,7 +189,9 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
                     </div>
 
                     <div className="bg-gray-50 p-3 rounded border">
-                      <h4 className="text-sm font-medium text-gray-500">Pincode</h4>
+                      <h4 className="text-sm font-medium text-gray-500">
+                        Pincode
+                      </h4>
                       <p className="font-medium text-gray-800">
                         {student.pincode || "-"}
                       </p>
@@ -388,7 +398,7 @@ export default DataConfirmation;
 //                 </div>
 //               </div>
 //             </div>
-            
+
 //             <div className="space-y-3 md:col-span-2">
 //               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 //                 <div className="bg-gray-50 p-3 rounded border">
