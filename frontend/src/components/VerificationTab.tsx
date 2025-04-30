@@ -160,14 +160,11 @@ const VerificationTab = () => {
       setSuccess("Your data has been successfully updated!");
 
       // If mobile is not verified, show OTP verification next
-      // if (!student.is_mobile_verified) {
-      //   setLoading(false);
-      //   setShowOtpVerification(true);
-      //   return;
-      // }
-      
-      setLoading(false);
-      setShowOtpVerification(true);
+      if (true) {
+        setLoading(false);
+        setShowOtpVerification(true);
+        return;
+      }
 
       // If mobile is already verified, navigate to thank you page
       navigate("/thank-you");
