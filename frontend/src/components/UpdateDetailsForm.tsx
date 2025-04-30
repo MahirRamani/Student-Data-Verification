@@ -360,7 +360,7 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
                   </p>
                 )}
               </div>
-
+                <div> </div>
               <div className="space-y-2">
                 <Label htmlFor="district" className="text-gray-700">
                   District
