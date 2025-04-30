@@ -165,7 +165,7 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
         is_mobile_verified: !mobileChanged && student.is_mobile_verified,
       });
 
-      setSuccess("Your details have been updated successfully.");
+      setSuccess("Your details have been saved successfully.");
 
       // Give user time to see success message before continuing
       setTimeout(() => {

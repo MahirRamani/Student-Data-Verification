@@ -76,16 +76,16 @@ class StudentViewSet(viewsets.ModelViewSet):
         student = self.get_object()
         student.is_mobile_verified = True
         # Cannot verify if mobile is not verified
-        if not student.is_mobile_verified:
-            return Response(
-                {'error': 'Mobile number must be verified first'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # if not student.is_mobile_verified:
+        #     return Response(
+        #         {'error': 'Mobile number must be verified first'}, 
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
         
-        student.is_data_verified = True
+        # student.is_data_verified = True
         student.save()
-        print("data verified")
-        return Response({'status': 'data verified'})
+        print("Mobile number verified")
+        return Response({'status': 'Mobile number verified'})
     
     @action(detail=True, methods=['get'])
     def history(self, request, roll_no=None):

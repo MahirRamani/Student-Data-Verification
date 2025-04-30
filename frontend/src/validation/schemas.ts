@@ -83,6 +83,7 @@ export const updateDetailsSchema = z.object({
   district: z.string().min(1, 'District is required'),
   pincode: z.string()
     .regex(/^\d{6}$/, "Pincode must be a 6-digit number"),
+  is_data_verified: z.boolean().optional(),
 });
 
 export type UpdateDetailsInput = z.infer<typeof updateDetailsSchema>;
