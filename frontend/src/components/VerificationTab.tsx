@@ -145,20 +145,20 @@ const VerificationTab = () => {
     try {
       // First verify the data and set the is_data_verified flag to true
       // await verifyStudentData(student.roll_no);
-      
+
       // Update student data in store with is_data_verified flag
-      student.setStudentData({ 
-        ...student, 
-        is_data_verified: true 
+      student.setStudentData({
+        ...student,
+        is_data_verified: true,
       });
 
       await updateStudentData(student.roll_no, {
         ...student,
         is_data_verified: true,
       });
-      
+
       setSuccess("Your data has been successfully updated!");
-      
+
       // If mobile is not verified, show OTP verification next
       // if (!student.is_mobile_verified) {
       //   setLoading(false);
@@ -166,8 +166,11 @@ const VerificationTab = () => {
       //   return;
       // }
       
+      setLoading(false);
+      setShowOtpVerification(true);
+
       // If mobile is already verified, navigate to thank you page
-      // navigate("/thank-you");
+      navigate("/thank-you");
     } catch (err: any) {
       console.error("Failed to verify data:", err);
       setError("Verification failed. Please try again.");
@@ -401,7 +404,6 @@ const VerificationTab = () => {
                   {loading ? "Processing..." : "Verify Data"}
                   {!loading && <CheckSquare className="h-4 w-4" />}
                 </Button>
-
               </div>
             </div>
           </>
@@ -412,7 +414,6 @@ const VerificationTab = () => {
 };
 
 export default VerificationTab;
-
 
 // import { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
