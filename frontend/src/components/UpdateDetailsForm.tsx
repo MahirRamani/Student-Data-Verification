@@ -765,7 +765,6 @@
 // };
 
 // export default UpdateDetailsForm;
-
 import React, { useState, useEffect } from "react";
 import { useStudentStore } from "../store/studentStore";
 import { updateStudentData } from "../services/api";
@@ -887,20 +886,10 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
   const [success, setSuccess] = useState<string | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
   const [showGuidelines, setShowGuidelines] = useState(false);
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [talukaOptions, setTalukaOptions] = useState<string[]>([]);
   const [showCustomPincode, setShowCustomPincode] = useState(false);
   const [showCustomCity, setShowCustomCity] = useState(false);
   const [showCustomDistrict, setShowCustomDistrict] = useState(false);
   const [showCustomTaluka, setShowCustomTaluka] = useState(false);
-
-  // We don't need to filter talukas by district anymore since we're using separate lists
-  // Keep this useEffect empty or remove it if not needed for other functionality
-  useEffect(() => {
-    // With the new approach, we show all talukas in the dropdown
-    // regardless of which district is selected
-    setTalukaOptions(TALUKAS);
-  }, []);
 
   // Default values from the store
   const defaultValues = {
@@ -941,11 +930,6 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
     // Check if district needs custom input
     if (defaultValues.district && !DISTRICTS.includes(defaultValues.district)) {
       setShowCustomDistrict(true);
-    }
-    
-    // Set selected district
-    if (defaultValues.district) {
-      setSelectedDistrict(defaultValues.district);
     }
     
     // Check if taluka needs custom input
@@ -1207,9 +1191,6 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
                       id="district"
                       {...register("district")}
                       className="focus:border-blue-300 flex-grow"
-                      onChange={(e) => {
-                        setSelectedDistrict(e.target.value);
-                      }}
                     />
                     <button
                       type="button"
@@ -1230,7 +1211,6 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
                             value={field.value} 
                             onValueChange={(value) => {
                               field.onChange(value);
-                              setSelectedDistrict(value);
                             }}
                           >
                             <SelectTrigger className="focus:border-blue-300 w-full">
@@ -1512,7 +1492,6 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({
 };
 
 export default UpdateDetailsForm;
-
 
 
 // // src/components/UpdateDetailsForm.tsx
