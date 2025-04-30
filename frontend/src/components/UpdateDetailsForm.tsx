@@ -252,7 +252,6 @@ const SearchableDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -260,13 +259,11 @@ const SearchableDropdown = ({
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
   return (
     <div className="space-y-2">
       <Label htmlFor={name.toString()} className="text-gray-700">
@@ -276,55 +273,60 @@ const SearchableDropdown = ({
         <Controller
           name={name}
           control={control}
-          render={({ field }) => (
-            <div>
-              <div className="flex items-center relative">
-                <Input
-                  placeholder={placeholder}
-                  value={filter}
-                  onChange={(e) => {
-                    setFilter(e.target.value);
-                    if (!isOpen) setIsOpen(true);
-                  }}
-                  onFocus={() => setIsOpen(true)}
-                  className="focus:border-blue-300 w-full pr-8"
-                />
-                <Search className="h-4 w-4 text-gray-500 absolute right-3" />
-              </div>
-              
-              {isOpen && (
-                <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg max-h-60 overflow-y-auto">
-                  {options.length > 0 ? (
-                    options.map((option) => (
-                      <div
-                        key={option}
-                        className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
-                          field.value === option ? "bg-blue-100" : ""
-                        }`}
-                        onClick={() => {
-                          field.onChange(option);
-                          setFilter(option);
-                          setIsOpen(false);
-                        }}
-                      >
-                        {option}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="px-3 py-2 text-sm text-gray-500">No results found</div>
-                  )}
+          render={({ field }) => {
+            // Initialize the filter with field value if not already set
+            useEffect(() => {
+              if (field.value && !filter) {
+                // Ensure we're passing a string to setFilter
+                setFilter(typeof field.value === 'string' ? field.value : String(field.value));
+              }
+            }, [field.value, filter]);
+            
+            return (
+              <div>
+                <div className="flex items-center relative">
+                  <Input
+                    placeholder={placeholder}
+                    value={filter}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      setFilter(newValue);
+                      // Update the form field value too
+                      field.onChange(newValue);
+                      if (!isOpen && newValue) setIsOpen(true);
+                    }}
+                    onFocus={() => setIsOpen(true)}
+                    className="focus:border-blue-300 w-full pr-8"
+                  />
+                  <Search className="h-4 w-4 text-gray-500 absolute right-3" />
                 </div>
-              )}
-              <input
-                type="hidden"
-                name={field.name}
-                ref={field.ref}
-                onBlur={field.onBlur}
-                onChange={field.onChange}
-                value={String(field.value || '')}
-              />
-            </div>
-          )}
+                
+                {isOpen && (
+                  <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg max-h-60 overflow-y-auto">
+                    {options.length > 0 ? (
+                      options.map((option) => (
+                        <div
+                          key={option}
+                          className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
+                            field.value === option ? "bg-blue-100" : ""
+                          }`}
+                          onClick={() => {
+                            field.onChange(option);
+                            setFilter(option);
+                            setIsOpen(false);
+                          }}
+                        >
+                          {option}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-3 py-2 text-sm text-gray-500">No results found</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          }}
         />
       </div>
       {errors[name] && (
