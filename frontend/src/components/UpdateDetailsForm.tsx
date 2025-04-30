@@ -367,23 +367,10 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
   const [talukaFilter, setTalukaFilter] = useState("")
   // const [cityFilter, setCityFilter] = useState("")
   const [pincodeFilter, setPincodeFilter] = useState("")
-
-  // Default values from the store
-  const defaultValues = {
-    roll_no: student.roll_no || "",
-    name: student.name || "",
-    date_of_birth: student.date_of_birth ? student.date_of_birth.split("T")[0] : "",
-    mobile_number: student.mobile_number || "",
-    email: student.email || "",
-    father_mobile_number: student.father_mobile_number || "",
-    field_of_study: student.field_of_study || "",
-    // branch is removed
-    address: student.address || "",
-    taluka: student.taluka || "",
-    city: student.city || "", // New city field
-    district: student.district || "",
-    pincode: student.pincode || "",
-  }
+  const [isDistrictDropdownOpen, setIsDistrictDropdownOpen] = useState(false)
+  const [isTalukaDropdownOpen, setIsTalukaDropdownOpen] = useState(false)
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false)
+  const [isPincodeDropdownOpen, setIsPincodeDropdownOpen] = useState(false)
 
   const {
     control,
@@ -393,7 +380,21 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
     formState: { errors, isDirty },
   } = useForm<UpdateDetailsInput>({
     resolver: zodResolver(updateDetailsSchema),
-    defaultValues,
+    defaultValues: {
+      roll_no: student.roll_no || "",
+      name: student.name || "",
+      date_of_birth: student.date_of_birth ? student.date_of_birth.split("T")[0] : "",
+      mobile_number: student.mobile_number || "",
+      email: student.email || "",
+      father_mobile_number: student.father_mobile_number || "",
+      field_of_study: student.field_of_study || "",
+      // branch is removed
+      address: student.address || "",
+      taluka: student.taluka || "",
+      city: student.city || "", // New city field
+      district: student.district || "",
+      pincode: student.pincode || "",
+    },
   })
 
   // Watch form values for changes
@@ -401,19 +402,33 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
 
   // Effect to check if city needs custom input
   useEffect(() => {
-    if (defaultValues.city && !CITIES.includes(defaultValues.city)) {
+    if (student.city && !CITIES.includes(student.city)) {
       setShowCustomCity(true)
     }
-  }, [defaultValues])
+  }, [student.city])
 
   // Check if there are any actual changes in the data
   useEffect(() => {
     // Filter out roll_no since it's read-only
     const { roll_no, ...currentValues } = formValues
-    const { roll_no: origRoll, ...originalValues } = defaultValues
+    const { roll_no: origRoll, ...originalValues } = {
+      roll_no: student.roll_no || "",
+      name: student.name || "",
+      date_of_birth: student.date_of_birth ? student.date_of_birth.split("T")[0] : "",
+      mobile_number: student.mobile_number || "",
+      email: student.email || "",
+      father_mobile_number: student.father_mobile_number || "",
+      field_of_study: student.field_of_study || "",
+      // branch is removed
+      address: student.address || "",
+      taluka: student.taluka || "",
+      city: student.city || "", // New city field
+      district: student.district || "",
+      pincode: student.pincode || "",
+    }
 
     setHasChanges(!isEqual(currentValues, originalValues))
-  }, [formValues, defaultValues])
+  }, [formValues, student])
 
   // Filtered lists for dropdowns
   const filteredDistricts = DISTRICTS.filter((district) =>
@@ -475,6 +490,8 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
     filter,
     setFilter,
     placeholder,
+    isOpen,
+    setIsOpen,
   }: {
     name: keyof UpdateDetailsInput
     label: string
@@ -482,8 +499,9 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
     filter: string
     setFilter: (value: string) => void
     placeholder: string
+    isOpen: boolean
+    setIsOpen: (value: boolean) => void
   }) => {
-    const [isOpen, setIsOpen] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
 
     // Close dropdown when clicking outside
@@ -497,7 +515,7 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
       return () => {
         document.removeEventListener("mousedown", handleClickOutside)
       }
-    }, [])
+    }, [setIsOpen])
 
     return (
       <div className="space-y-2">
@@ -508,49 +526,50 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
           <Controller
             name={name}
             control={control}
-            render={({ field }) => (
-              <div>
-                <div className="flex items-center relative">
-                  <Input
-                    placeholder={placeholder}
-                    value={filter}
-                    onChange={(e) => {
-                      const newValue = e.target.value
-                      setFilter(newValue)
-                      // Only update the form field if we're selecting from dropdown
-                      if (!isOpen) setIsOpen(true)
-                    }}
-                    onFocus={() => setIsOpen(true)}
-                    className="focus:border-blue-300 w-full pr-8"
-                  />
-                  <Search className="h-4 w-4 text-gray-500 absolute right-3" />
-                </div>
-
-                {isOpen && (
-                  <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg max-h-60 overflow-y-auto">
-                    {options.length > 0 ? (
-                      options.map((option) => (
-                        <div
-                          key={option}
-                          className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
-                            field.value === option ? "bg-blue-100" : ""
-                          }`}
-                          onClick={() => {
-                            field.onChange(option)
-                            setFilter(option)
-                            setIsOpen(false)
-                          }}
-                        >
-                          {option}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="px-3 py-2 text-sm text-gray-500">No results found</div>
-                    )}
+            render={({ field }) => {
+              return (
+                <div>
+                  <div className="flex items-center relative">
+                    <Input
+                      placeholder={placeholder}
+                      value={filter}
+                      onChange={(e) => {
+                        const newValue = e.target.value
+                        setFilter(newValue)
+                        if (!isOpen && newValue) setIsOpen(true)
+                      }}
+                      onFocus={() => setIsOpen(true)}
+                      className="focus:border-blue-300 w-full pr-8"
+                    />
+                    <Search className="h-4 w-4 text-gray-500 absolute right-3" />
                   </div>
-                )}
-              </div>
-            )}
+
+                  {isOpen && (
+                    <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg max-h-60 overflow-y-auto">
+                      {options.length > 0 ? (
+                        options.map((option) => (
+                          <div
+                            key={option}
+                            className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
+                              field.value === option ? "bg-blue-100" : ""
+                            }`}
+                            onClick={() => {
+                              field.onChange(option)
+                              setFilter(option)
+                              setIsOpen(false)
+                            }}
+                          >
+                            {option}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-3 py-2 text-sm text-gray-500">No results found</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            }}
           />
         </div>
         {errors[name] && <p className="text-sm text-red-500 mt-1">{errors[name]?.message}</p>}
@@ -584,6 +603,25 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
+
+  // useRef for city dropdown
+  const cityDropdownRef = useRef<HTMLDivElement>(null)
+  const [citySearchTerm, setCitySearchTerm] = useState("")
+
+  // Close city dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cityDropdownRef.current && !cityDropdownRef.current.contains(event.target as Node)) {
+        setIsCityDropdownOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  const filteredCityOptions = CITIES.filter((city) => city.toLowerCase().includes(citySearchTerm.toLowerCase()))
 
   return (
     <Card className="shadow-md border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
@@ -722,6 +760,8 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
                 filter={districtFilter}
                 setFilter={setDistrictFilter}
                 placeholder="Select district"
+                isOpen={isDistrictDropdownOpen}
+                setIsOpen={setIsDistrictDropdownOpen}
               />
 
               {/* Searchable Taluka Dropdown */}
@@ -732,6 +772,8 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
                 filter={talukaFilter}
                 setFilter={setTalukaFilter}
                 placeholder="Select taluka"
+                isOpen={isTalukaDropdownOpen}
+                setIsOpen={setIsTalukaDropdownOpen}
               />
 
               {/* City Field (Dropdown + Custom Input Option) */}
@@ -752,23 +794,16 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
                   </div>
                 ) : (
                   <div className="flex">
-                    <div className="flex-grow relative" ref={useRef<HTMLDivElement>(null)}>
+                    <div className="flex-grow relative" ref={cityDropdownRef}>
                       <Controller
                         name="city"
                         control={control}
                         render={({ field }) => {
-                          const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-                          const [searchTerm, setSearchTerm] = useState("")
-
-                          const filteredCityOptions = CITIES.filter((city) =>
-                            city.toLowerCase().includes(searchTerm.toLowerCase()),
-                          )
-
                           return (
                             <div>
                               <div
                                 className="flex items-center justify-between border rounded-md px-3 py-2 focus-within:border-blue-300 cursor-pointer"
-                                onClick={() => setIsDropdownOpen(true)}
+                                onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
                               >
                                 <span className={field.value ? "" : "text-gray-400"}>
                                   {field.value || "Select city"}
@@ -776,13 +811,13 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
                                 <Search className="h-4 w-4 text-gray-500" />
                               </div>
 
-                              {isDropdownOpen && (
+                              {isCityDropdownOpen && (
                                 <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg">
                                   <div className="p-2 border-b">
                                     <Input
                                       placeholder="Search cities..."
-                                      value={searchTerm}
-                                      onChange={(e) => setSearchTerm(e.target.value)}
+                                      value={citySearchTerm}
+                                      onChange={(e) => setCitySearchTerm(e.target.value)}
                                       className="border focus-visible:ring-1 focus-visible:ring-blue-300"
                                       autoFocus
                                       onClick={(e) => e.stopPropagation()}
@@ -798,7 +833,7 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
                                           }`}
                                           onClick={() => {
                                             field.onChange(city)
-                                            setIsDropdownOpen(false)
+                                            setIsCityDropdownOpen(false)
                                           }}
                                         >
                                           {city}
@@ -835,6 +870,8 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
                 filter={pincodeFilter}
                 setFilter={setPincodeFilter}
                 placeholder="Select pincode"
+                isOpen={isPincodeDropdownOpen}
+                setIsOpen={setIsPincodeDropdownOpen}
               />
 
               <div className="space-y-2 md:col-span-2">
@@ -886,7 +923,6 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
 }
 
 export default UpdateDetailsForm
-
 
 // import React, { useState, useEffect, useRef } from "react";
 // import { useStudentStore } from "../store/studentStore";
