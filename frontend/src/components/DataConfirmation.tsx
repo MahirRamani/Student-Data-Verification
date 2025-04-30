@@ -26,7 +26,7 @@ const DataConfirmation: React.FC<DataConfirmationProps> = ({
   const [showOtpVerification, setShowOtpVerification] = useState(true);
 
   const handleNoChanges = () => {
-    setLoading(true);
+    setLoading(false);
     if (showOtpVerification) {
       // Show OTP verification and navigate to thank you page after verification is complete
       <OtpVerification
