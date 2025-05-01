@@ -1,10 +1,10 @@
   import { useState, useEffect } from "react";
-  import { useStudentStore } from "../store/studentStore";
+  // import { useStudentStore } from "../store/studentStore";
   import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
   import { CheckCircle2 } from "lucide-react";
 
   const ThankYouPage = () => {
-    const student = useStudentStore();
+    // const student = useStudentStore();
     const [isAnimating, setIsAnimating] = useState(true);
 
     // Control the entry animation
@@ -38,7 +38,7 @@
               {/* Show roll number */}
               <div className="mt-4 p-4 bg-gray-50 rounded-md border">
                 <p className="text-gray-500 text-sm">Your Roll Number</p>
-                <p className="text-xl font-bold text-gray-800">{student.roll_no}</p>
+                {/* <p className="text-xl font-bold text-gray-800">{student.roll_no}</p> */}
               </div>
             </div>
             
