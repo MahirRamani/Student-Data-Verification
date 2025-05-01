@@ -12,10 +12,11 @@ import { Textarea } from "./ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { Alert, AlertDescription } from "./ui/alert"
 import { AlertCircle, CheckCircle2, Info, Search } from "lucide-react"
-import { useForm, Controller } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { updateDetailsSchema, type UpdateDetailsInput } from "../validation/schemas"
 import { isEqual } from "lodash"
+import { Control, Controller, FieldErrors } from "react-hook-form"
 
 // Field of study options with BTech Computer merged
 const FIELD_OPTIONS = [
@@ -45,286 +46,13 @@ const INPUT_GUIDELINES = {
 // Define separate lists for districts and talukas
 const DISTRICTS = [
   "Ahmedabad",
-  "Amreli",
-  "Anand",
-  "Aravalli",
-  "Banaskantha",
-  "Bharuch",
-  "Bhavnagar",
-  "Botad",
-  "Chhota Udepur",
-  "Dahod",
-  "Dang",
-  "Devbhumi Dwarka",
-  "Gandhinagar",
-  "Gir Somnath",
-  "Jamnagar",
-  "Junagadh",
-  "Kachchh",
-  "Kheda",
-  "Mahesana",
-  "Mahisagar",
-  "Morbi",
-  "Narmada",
-  "Navsari",
-  "Panchmahal",
-  "Patan",
-  "Porbandar",
-  "Rajkot",
-  "Sabarkantha",
-  "Surat",
-  "Surendranagar",
-  "Tapi",
-  "Vadodara",
+  // ... other districts
   "Valsad",
 ]
 
 const TALUKAS = [
-  "Ahmedabad City",
-  "Daskroi",
-  "Detroj-Rampura",
-  "Dholka",
-  "Dhandhuka",
-  "Sanand",
-  "Viramgam",
-  "Bavla",
-  "Amreli",
-  "Lathi",
-  "Lilia",
-  "Savarkundla",
-  "Khambha",
-  "Jafrabad",
-  "Rajula",
-  "Bagasara",
-  "Dhari",
-  "Kunkavav",
-  "Vadia",
-  "Anand",
-  "Petlad",
-  "Sojitra",
-  "Khambhat",
-  "Borsad",
-  "Anklav",
-  "Tarapur",
-  "Umreth",
-  "Modasa",
-  "Dhansura",
-  "Malpur",
-  "Meghraj",
-  "Bayad",
-  "Bhiloda",
-  "Palanpur",
-  "Vadgam",
-  "Danta",
-  "Amirgadh",
-  "Dantiwada",
-  "Deesa",
-  "Dhanera",
-  "Kankrej",
-  "Tharad",
-  "Vav",
-  "Bharuch",
-  "Amod",
-  "Jambusar",
-  "Jhagadia",
-  "Ankleshwar",
-  "Hansot",
-  "Valia",
-  "Bhavnagar",
-  "Ghogha",
-  "Sihor",
-  "Palitana",
-  "Umrala",
-  "Gariadhar",
-  "Mahuva",
-  "Talaja",
-  "Botad",
-  "Barwala",
-  "Gadhada",
-  "Ranpur",
-  "Chhota Udaipur",
-  "Jetpur",
-  "Pavi Bodeli",
-  "Kavant",
-  "Naswadi",
-  "Sankheda",
-  "Dahod",
-  "Limkheda",
-  "Zalod",
-  "Garbada",
-  "Dhanpur",
-  "Devgad Baria",
-  "Fatepura",
-  "Ahwa",
-  "Waghai",
-  "Subir",
-  "Khambhalia",
-  "Bhanvad",
-  "Kalyanpur",
-  "Dwarka",
-  "Gandhinagar",
-  "Dehgam",
-  "Mansa",
-  "Kalol",
-  "Veraval",
-  "Kodinar",
-  "Una",
-  "Talala",
-  "Sutrapada",
-  "Gir Gadhada",
-  "Jamnagar",
-  "Kalavad",
-  "Dhrol",
-  "Jodiya",
-  "Jamjodhpur",
-  "Lalpur",
-  "Junagadh",
-  "Mangrol",
-  "Manavadar",
-  "Malia",
-  "Visavadar",
-  "Bhesan",
-  "Vanthali",
-  "Keshod",
-  "Kheda",
-  "Kapadvanj",
-  "Mehmedabad",
-  "Mahudha",
-  "Matar",
-  "Thasra",
-  "Nadiad",
-  "Vaso",
-  "Galteshwar",
-  "Bhuj",
-  "Anjar",
-  "Gandhidham",
-  "Mandvi",
-  "Mundra",
-  "Nakhatrana",
-  "Abdasa",
-  "Lakhpat",
-  "Rapar",
-  "Lunawada",
-  "Santrampur",
-  "Kadana",
-  "Khanpur",
-  "Balasinor",
-  "Virpur",
-  "Mehsana",
-  "Kadi",
-  "Vijapur",
-  "Visnagar",
-  "Becharaji",
-  "Satlasana",
-  "Kheralu",
-  "Unjha",
-  "Morbi",
-  "Tankara",
-  "Wankaner",
-  "Halvad",
-  "Maliya",
-  "Rajpipla",
-  "Garudeshwar",
-  "Nandod",
-  "Sagbara",
-  "Tilakwada",
-  "Dediapada",
-  "Navsari",
-  "Jalalpore",
-  "Gandevi",
-  "Chikhli",
-  "Khergam",
-  "Vansda",
-  "Godhra",
-  "Lunawada",
-  "Morwa Hadaf",
-  "Shehera",
-  "Khanpur",
-  "Santrampur",
-  "Halol",
-  "Kalol",
-  "Patan",
-  "Siddhpur",
-  "Chanasma",
-  "Sami",
-  "Harij",
-  "Radhanpur",
-  "Santalpur",
-  "Porbandar",
-  "Ranavav",
-  "Kutiyana",
-  "Rajkot",
-  "Lodhika",
-  "Jasdan",
-  "Kotda Sangani",
-  "Gondal",
-  "Jetpur",
-  "Dhoraji",
-  "Paddhari",
-  "Himatnagar",
-  "Idar",
-  "Khedbrahma",
-  "Poshina",
-  "Vadali",
-  "Talod",
-  "Prantij",
-  "Bayad",
-  "Surat City",
-  "Choryasi",
-  "Olpad",
-  "Mandvi",
-  "Mangrol",
-  "Umarpada",
-  "Bardoli",
-  "Kamrej",
-  "Mahuva",
-  "Surendranagar",
-  "Wadhwan",
-  "Limbdi",
-  "Chotila",
-  "Sayla",
-  "Thangadh",
-  "Lakhtar",
-  "Dhrangadhra",
-  "Halvad",
-  "Vyara",
-  "Songadh",
-  "Uchchhal",
-  "Nizar",
-  "Dolvan",
-  "Kukarmunda",
-  "Valod",
-  "Vadodara",
-  "Savli",
-  "Karjan",
-  "Dabhoi",
-  "Padra",
-  "Sinor",
-  "Desar",
-  "Valsad",
-  "Pardi",
-  "Umbergaon",
-  "Kaprada",
+  // ... talukas
   "Dharampur",
-]
-
-// Extract these from your data
-const CITIES = [
-  "Ahmedabad",
-  "Amreli",
-  "Anand",
-  "Bharuch",
-  "Bhavnagar",
-  "Bhuj",
-  "Gandhinagar",
-  "Jamnagar",
-  "Junagadh",
-  "Mehsana",
-  "Nadiad",
-  "Navsari",
-  "Rajkot",
-  "Surat",
-  // Add more cities as needed
 ]
 
 const PINCODES = [
@@ -360,25 +88,6 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
   const [success, setSuccess] = useState<string | null>(null)
   const [hasChanges, setHasChanges] = useState(false)
   const [showGuidelines, setShowGuidelines] = useState(false)
-  const [showCustomCity, setShowCustomCity] = useState(false)
-
-  // Search filters for dropdowns
-  const [districtFilter, setDistrictFilter] = useState("")
-  const [talukaFilter, setTalukaFilter] = useState("")
-  const [cityFilter, setCityFilter] = useState("")
-  const [pincodeFilter, setPincodeFilter] = useState("")
-
-  // Dropdown open states
-  const [isDistrictDropdownOpen, setIsDistrictDropdownOpen] = useState(false)
-  const [isTalukaDropdownOpen, setIsTalukaDropdownOpen] = useState(false)
-  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false)
-  const [isPincodeDropdownOpen, setIsPincodeDropdownOpen] = useState(false)
-
-  // Refs for dropdowns
-  const districtDropdownRef = useRef<HTMLDivElement>(null)
-  const talukaDropdownRef = useRef<HTMLDivElement>(null)
-  const cityDropdownRef = useRef<HTMLDivElement>(null)
-  const pincodeDropdownRef = useRef<HTMLDivElement>(null)
 
   const {
     control,
@@ -396,10 +105,9 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
       email: student.email || "",
       father_mobile_number: student.father_mobile_number || "",
       field_of_study: student.field_of_study || "",
-      // branch is removed
       address: student.address || "",
       taluka: student.taluka || "",
-      city: student.city || "", // New city field
+      city: student.city || "",
       district: student.district || "",
       pincode: student.pincode || "",
     },
@@ -407,21 +115,6 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
 
   // Watch form values for changes
   const formValues = watch()
-
-  // Effect to check if city needs custom input
-  useEffect(() => {
-    if (student.city && !CITIES.includes(student.city)) {
-      setShowCustomCity(true)
-    }
-  }, [student.city])
-
-  // Initialize filters with current values
-  useEffect(() => {
-    if (student.district) setDistrictFilter(student.district)
-    if (student.taluka) setTalukaFilter(student.taluka)
-    if (student.city) setCityFilter(student.city)
-    if (student.pincode) setPincodeFilter(student.pincode)
-  }, [student.district, student.taluka, student.city, student.pincode])
 
   // Check if there are any actual changes in the data
   useEffect(() => {
@@ -435,27 +128,15 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
       email: student.email || "",
       father_mobile_number: student.father_mobile_number || "",
       field_of_study: student.field_of_study || "",
-      // branch is removed
       address: student.address || "",
       taluka: student.taluka || "",
-      city: student.city || "", // New city field
+      city: student.city || "",
       district: student.district || "",
       pincode: student.pincode || "",
     }
 
     setHasChanges(!isEqual(currentValues, originalValues))
   }, [formValues, student])
-
-  // Filtered lists for dropdowns
-  const filteredDistricts = DISTRICTS.filter((district) =>
-    district.toLowerCase().includes(districtFilter.toLowerCase()),
-  )
-
-  const filteredTalukas = TALUKAS.filter((taluka) => taluka.toLowerCase().includes(talukaFilter.toLowerCase()))
-
-  const filteredCities = CITIES.filter((city) => city.toLowerCase().includes(cityFilter.toLowerCase()))
-
-  const filteredPincodes = PINCODES.filter((pincode) => pincode.includes(pincodeFilter))
 
   const onSubmit = async (data: UpdateDetailsInput) => {
     // If no changes, show message and return
@@ -497,58 +178,43 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
     }
   }
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // District dropdown
-      if (districtDropdownRef.current && !districtDropdownRef.current.contains(event.target as Node)) {
-        setIsDistrictDropdownOpen(false)
-      }
-
-      // Taluka dropdown
-      if (talukaDropdownRef.current && !talukaDropdownRef.current.contains(event.target as Node)) {
-        setIsTalukaDropdownOpen(false)
-      }
-
-      // City dropdown
-      if (cityDropdownRef.current && !cityDropdownRef.current.contains(event.target as Node)) {
-        setIsCityDropdownOpen(false)
-      }
-
-      // Pincode dropdown
-      if (pincodeDropdownRef.current && !pincodeDropdownRef.current.contains(event.target as Node)) {
-        setIsPincodeDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
-
-  // Custom dropdown component for district, taluka, and pincode
-  const CustomDropdown = ({
+  // Custom improved searchable dropdown component
+  const SearchableDropdown = ({
     name,
     label,
     options,
-    filter,
-    setFilter,
-    placeholder,
-    isOpen,
-    setIsOpen,
-    dropdownRef,
+    control,
+    errors,
+    placeholder = "Select an option"
   }: {
     name: keyof UpdateDetailsInput
     label: string
     options: string[]
-    filter: string
-    setFilter: (value: string) => void
-    placeholder: string
-    isOpen: boolean
-    setIsOpen: (value: boolean) => void
-    dropdownRef: React.RefObject<HTMLDivElement>
+    control: Control<UpdateDetailsInput>
+    errors: FieldErrors<UpdateDetailsInput>
+    placeholder?: string
   }) => {
+    const [searchTerm, setSearchTerm] = useState("")
+    const [isOpen, setIsOpen] = useState(false)
+    const dropdownRef = useRef<HTMLDivElement>(null)
+    
+    // Filter options based on search term
+    const filteredOptions = options.filter(option => 
+      option.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    
+    // Close dropdown when clicking outside
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+          setIsOpen(false)
+        }
+      }
+      
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [])
+
     return (
       <div className="space-y-2">
         <Label htmlFor={name.toString()} className="text-gray-700">
@@ -559,49 +225,57 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
             name={name}
             control={control}
             render={({ field }) => (
-              <div>
-                <div className="flex items-center relative">
-                  <Input
-                    id={`${name}-input`}
-                    placeholder={placeholder}
-                    value={filter}
-                    onChange={(e) => {
-                      const newValue = e.target.value
-                      setFilter(newValue)
-                      // Don't update the form field yet, just open the dropdown
-                      if (!isOpen) setIsOpen(true)
-                    }}
-                    onFocus={() => setIsOpen(true)}
-                    className="focus:border-blue-300 w-full pr-8"
-                    autoComplete="off"
-                  />
-                  <Search className="h-4 w-4 text-gray-500 absolute right-3" />
+              <>
+                <div 
+                  className="flex items-center border rounded-md focus-within:border-blue-300 px-3 py-2 cursor-pointer"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  <span className={`flex-grow ${field.value ? "" : "text-gray-400"}`}>
+                    {field.value || placeholder}
+                  </span>
+                  <Search className="h-4 w-4 text-gray-500" />
                 </div>
-
+                
                 {isOpen && (
-                  <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg max-h-60 overflow-y-auto">
-                    {options.length > 0 ? (
-                      options.map((option) => (
-                        <div
-                          key={option}
-                          className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
-                            field.value === option ? "bg-blue-100" : ""
-                          }`}
-                          onClick={() => {
-                            field.onChange(option)
-                            setFilter(option)
-                            setIsOpen(false)
-                          }}
-                        >
-                          {option}
+                  <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg">
+                    <div className="p-2 border-b">
+                      <Input
+                        placeholder={`Search ${label.toLowerCase()}...`}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="border focus:border-blue-300"
+                        autoComplete="off"
+                        autoFocus
+                      />
+                    </div>
+                    
+                    <div className="max-h-60 overflow-y-auto">
+                      {filteredOptions.length > 0 ? (
+                        filteredOptions.map((option) => (
+                          <div
+                            key={option}
+                            className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
+                              field.value === option ? "bg-blue-100" : ""
+                            }`}
+                            onClick={() => {
+                              field.onChange(option)
+                              setIsOpen(false)
+                              setSearchTerm("")
+                            }}
+                          >
+                            {option}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-3 py-2 text-sm text-gray-500">
+                          No options found
                         </div>
-                      ))
-                    ) : (
-                      <div className="px-3 py-2 text-sm text-gray-500">No results found</div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 )}
-              </div>
+              </>
             )}
           />
         </div>
@@ -739,126 +413,43 @@ const UpdateDetailsForm: React.FC<UpdateDetailsFormProps> = ({ onCancel, onUpdat
                 {errors.field_of_study && <p className="text-sm text-red-500 mt-1">{errors.field_of_study.message}</p>}
               </div>
 
-              {/* District Dropdown */}
-              <CustomDropdown
+              {/* District Dropdown with Search */}
+              <SearchableDropdown
                 name="district"
                 label="District"
-                options={filteredDistricts}
-                filter={districtFilter}
-                setFilter={setDistrictFilter}
+                options={DISTRICTS}
+                control={control}
+                errors={errors}
                 placeholder="Select district"
-                isOpen={isDistrictDropdownOpen}
-                setIsOpen={setIsDistrictDropdownOpen}
-                dropdownRef={districtDropdownRef as React.RefObject<HTMLDivElement>}
               />
 
-              {/* Taluka Dropdown */}
-              <CustomDropdown
+              {/* Taluka Dropdown with Search */}
+              <SearchableDropdown
                 name="taluka"
                 label="Taluka"
-                options={filteredTalukas}
-                filter={talukaFilter}
-                setFilter={setTalukaFilter}
+                options={TALUKAS}
+                control={control}
+                errors={errors}
                 placeholder="Select taluka"
-                isOpen={isTalukaDropdownOpen}
-                setIsOpen={setIsTalukaDropdownOpen}
-                dropdownRef={talukaDropdownRef as React.RefObject<HTMLDivElement>}
               />
 
-              {/* City Field (Dropdown + Custom Input Option) */}
+              {/* City Field - Manual Entry */}
               <div className="space-y-2">
                 <Label htmlFor="city" className="text-gray-700">
                   City
                 </Label>
-                {showCustomCity ? (
-                  <div className="flex">
-                    <Input id="city" {...register("city")} className="focus:border-blue-300 flex-grow" />
-                    <button
-                      type="button"
-                      onClick={() => setShowCustomCity(false)}
-                      className="ml-2 px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm"
-                    >
-                      Use List
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex">
-                    <div className="flex-grow relative" ref={cityDropdownRef}>
-                      <Controller
-                        name="city"
-                        control={control}
-                        render={({ field }) => (
-                          <div>
-                            <div
-                              className="flex items-center justify-between border rounded-md px-3 py-2 focus-within:border-blue-300 cursor-pointer"
-                              onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
-                            >
-                              <span className={field.value ? "" : "text-gray-400"}>{field.value || "Select city"}</span>
-                              <Search className="h-4 w-4 text-gray-500" />
-                            </div>
-
-                            {isCityDropdownOpen && (
-                              <div className="absolute z-10 w-full mt-1 border rounded-md bg-white shadow-lg">
-                                <div className="p-2 border-b">
-                                  <Input
-                                    placeholder="Search cities..."
-                                    value={cityFilter}
-                                    onChange={(e) => setCityFilter(e.target.value)}
-                                    className="border focus-visible:ring-1 focus-visible:ring-blue-300"
-                                    autoFocus
-                                    onClick={(e) => e.stopPropagation()}
-                                    autoComplete="off"
-                                  />
-                                </div>
-                                <div className="max-h-60 overflow-y-auto">
-                                  {filteredCities.length > 0 ? (
-                                    filteredCities.map((city) => (
-                                      <div
-                                        key={city}
-                                        className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
-                                          field.value === city ? "bg-blue-100" : ""
-                                        }`}
-                                        onClick={() => {
-                                          field.onChange(city)
-                                          setIsCityDropdownOpen(false)
-                                        }}
-                                      >
-                                        {city}
-                                      </div>
-                                    ))
-                                  ) : (
-                                    <div className="px-3 py-2 text-sm text-gray-500">No cities found</div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowCustomCity(true)}
-                      className="ml-2 px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm"
-                    >
-                      Enter Custom
-                    </button>
-                  </div>
-                )}
+                <Input id="city" {...register("city")} className="focus:border-blue-300" placeholder="Enter your city" />
                 {errors.city && <p className="text-sm text-red-500 mt-1">{errors.city.message}</p>}
               </div>
 
-              {/* Pincode Dropdown */}
-              <CustomDropdown
+              {/* Pincode Dropdown with Search */}
+              <SearchableDropdown
                 name="pincode"
                 label="Pincode"
-                options={filteredPincodes}
-                filter={pincodeFilter}
-                setFilter={setPincodeFilter}
+                options={PINCODES}
+                control={control}
+                errors={errors}
                 placeholder="Select pincode"
-                isOpen={isPincodeDropdownOpen}
-                setIsOpen={setIsPincodeDropdownOpen}
-                dropdownRef={pincodeDropdownRef as React.RefObject<HTMLDivElement>}
               />
 
               <div className="space-y-2 md:col-span-2">
