@@ -46,7 +46,7 @@ const LoginForm = () => {
     } catch (err: any) {
       console.error("Login error:", err);
       setError(
-        err.response?.data?.error || "Failed to login. Please try again."
+        err.response?.data?.error ? err.response.data.error : "Server is Off. Contact Admin."
       );
     } finally {
       setLoading(false);
