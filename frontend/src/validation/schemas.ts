@@ -70,16 +70,23 @@ export const updateDetailsSchema = z.object({
   date_of_birth: z.string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date of birth must be in YYYY-MM-DD format'),
   mobile_number: z.string()
-    .regex(/^\+?[0-9]{10,15}$/, "Mobile number must be between 10-15 digits with proper country code"),
-  email: z.string().email('Please enter a valid email address'),
+    .min(1, "Mobile number is required")
+    .refine(val => /^\+[0-9]{1,4}[0-9]{10,14}$/.test(val), {
+      message: "Mobile number must include country code (e.g., +91XXXXXXXXXX)"
+    }),
+  email: z.string()
+    .min(1, "Email is required")
+    .email('Please enter a valid email address'),
   father_mobile_number: z.string()
-    .regex(/^\+?[0-9]{10,15}$/, "Father's mobile number must be between 10-15 digits with proper country code"),
+    .min(1, "Father's mobile number is required")
+    .refine(val => /^\+[0-9]{1,4}[0-9]{10,14}$/.test(val), {
+      message: "Father's mobile number must include country code (e.g., +91XXXXXXXXXX)"
+    }),
   field_of_study: z.string().min(1, 'Field of study is required'),
-  address: z.string().min(1, 'Address is required'),
-  // branch is removed
-  // src/validation/schemas.ts (continued)
+  address: z.string().min(1, 'Address is required')
+    .max(500, 'Address must be at most 500 characters'),
   taluka: z.string().min(1, 'Taluka is required'),
-  city: z.string().min(1, "City is required"),  // New city field
+  city: z.string().min(1, "City is required"),
   district: z.string().min(1, 'District is required'),
   pincode: z.string()
     .regex(/^\d{6}$/, "Pincode must be a 6-digit number"),
@@ -90,12 +97,15 @@ export type UpdateDetailsInput = z.infer<typeof updateDetailsSchema>;
 
 export const otpVerificationSchema = z.object({
   mobile_number: z.string()
-    .min(10, 'Mobile number should be at least 10 digits')
-    .max(15, 'Mobile number should not exceed 15 digits'),
+    .min(1, "Mobile number is required")
+    .refine(val => /^\+[0-9]{1,4}[0-9]{10,14}$/.test(val), {
+      message: "Mobile number must include country code (e.g., +91XXXXXXXXXX)"
+    }),
   otp: z.string()
     .length(6, 'OTP must be 6 digits')
     .regex(/^\d+$/, 'OTP must contain only numbers'),
 });
+
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type StudentInput = z.infer<typeof studentSchema>;
