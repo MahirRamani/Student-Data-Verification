@@ -7,7 +7,7 @@ class Student(models.Model):
     name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
     mobile_number = models.CharField(max_length=15)
-    email = models.EmailField(null=True, unique=True)
+    email = models.EmailField(null=True)
     father_mobile_number = models.CharField(max_length=15)
     field_of_study = models.CharField(max_length=100)  # Keep this field
     # branch field is removed
