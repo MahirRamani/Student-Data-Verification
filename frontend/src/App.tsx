@@ -4,7 +4,6 @@ import {
   Routes,
   Route,
   Navigate,
-  useNavigate,
 } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import StudentDashboard from "./components/StudentDashboard";
@@ -73,24 +72,24 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
 };
 
 // ThankYou page with auto-logout
-const ThankYouWithAutoLogout: React.FC = () => {
-  const navigate = useNavigate();
-  const { logout } = useStudentStore();
+// const ThankYouWithAutoLogout: React.FC = () => {
+//   const navigate = useNavigate();
+//   const { logout } = useStudentStore();
 
-  useEffect(() => {
-    // Auto-logout after 2 seconds
-    const timer = setTimeout(() => {
-      logout();
-      localStorage.removeItem("studentSession");
-      localStorage.removeItem("lastActivity");
-      navigate("/login");
-    }, 2000);
+//   useEffect(() => {
+//     // Auto-logout after 2 seconds
+//     const timer = setTimeout(() => {
+//       logout();
+//       localStorage.removeItem("studentSession");
+//       localStorage.removeItem("lastActivity");
+//       navigate("/login");
+//     }, 2000);
 
-    return () => clearTimeout(timer);
-  }, [logout, navigate]);
+//     return () => clearTimeout(timer);
+//   }, [logout, navigate]);
 
-  return <ThankYouPage />;
-};
+//   return <ThankYouPage />;
+// };
 
 const App = () => {
   const { isAuthenticated, logout } = useStudentStore();
@@ -201,7 +200,7 @@ const App = () => {
             path="/thank-you"
             element={
               <PrivateRoute>
-                <ThankYouWithAutoLogout />
+                <ThankYouPage />
               </PrivateRoute>
             }
           />
