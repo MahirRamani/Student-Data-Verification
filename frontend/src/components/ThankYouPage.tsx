@@ -1,21 +1,13 @@
-import { useState, useEffect } from "react";
 import { useStudentStore } from "../store/studentStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Button } from "./ui/button";
 import { CheckCircle2 } from "lucide-react";
 
 const ThankYouPage = () => {
   const student = useStudentStore();
-  const [isAnimating, setIsAnimating] = useState(true);
+  const isAnimating = true;
 
-  // Control the entry animation
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAnimating(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  // Animation will stay on until user interaction
+  // No useEffect with timer needed
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-8">
@@ -43,14 +35,6 @@ const ThankYouPage = () => {
             </div>
           </div>
           
-          <div className="pt-4">
-            <Button 
-              onClick={() => window.location.href = "/login"} 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
-            >
-              Back to Login
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>

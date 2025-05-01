@@ -127,7 +127,7 @@ const VerificationTab = () => {
     // Navigate to thank you page
     // navigate(`/student/${student.roll_no}`);
     const currentPath = window.location.pathname;
-    navigate(currentPath, { state: { activeTab: 'update' } });
+    navigate(currentPath, { state: { activeTab: "update" } });
   };
 
   const handleVerify = async () => {
@@ -305,6 +305,14 @@ const VerificationTab = () => {
                       </h4>
                       <p className="font-medium text-gray-800">
                         {student.mobile_number || "-"}
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded border">
+                      <h4 className="text-sm font-medium text-gray-500">
+                        Date of Birth
+                      </h4>
+                      <p className="font-medium text-gray-800">
+                        {student.date_of_birth || "-"}
                       </p>
                     </div>
                   </div>
